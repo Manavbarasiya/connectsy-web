@@ -19,10 +19,15 @@ const Feed = () => {
       console.error(err);
     }
   }
+  
 
   useEffect(()=>{
     getFeed();
   },[])
+  if(!feed)return;
+  if(feed.length<=0){
+    return <h1>NO more users found</h1>
+  }
   return (
     feed && (<div className='flex justify-center py-4'>
       <UserCard user={feed[0]}/>

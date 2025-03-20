@@ -2,7 +2,7 @@ import axios from "axios";
 import React, { useEffect } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests } from "../utils/requestSlice";
+import { addRequests, removeRequest } from "../utils/requestSlice";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -26,6 +26,14 @@ const Requests = () => {
   if (!requests || requests.length === 0) {
     return <p className="text-center mt-10 text-lg">No connection requests found</p>;
   }
+  const requestReceived=async(status,_id)=>{
+    try{
+        const res=await axios.post(BASE_URL+"/request/review/"+status+"/"+_id,{},{withCredentials:true});
+        dispatch(removeRequest(_id));
+    }catch(err){
+        console.log("Error in requestReceived part: "+err.message);
+    }
+  }
 
   return (
     <div className="text-center my-10">
@@ -35,7 +43,7 @@ const Requests = () => {
 
         return (
           <div key={_id} className="flex items-center justify-between m-4 p-4 rounded-lg bg-gray-100 w-2/3 mx-auto shadow-lg">
-            {/* Left Side - Image & Info */}
+
             <div className="flex items-center">
               <img
                 src={photoURL || "https://via.placeholder.com/100"}
@@ -49,12 +57,11 @@ const Requests = () => {
               </div>
             </div>
 
-            {/* Right Side - Buttons */}
             <div className="flex gap-3">
-              <button className="px-4 py-2 btn btn-primary transition">
+              <button className="px-4 py-2 btn btn-primary transition" onClick={()=>{requestReceived("accepted",request._id)}}>
                 Accept
               </button>
-              <button className="px-4 py-2 btn btn-secondary transition">
+              <button className="px-4 py-2 btn btn-secondary transition" onClick={()=>{requestReceived("rejected",request._id)}} >
                 Reject
               </button>
             </div>
