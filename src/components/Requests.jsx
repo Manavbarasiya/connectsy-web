@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addRequests, removeRequest } from "../utils/requestSlice";
@@ -9,6 +9,7 @@ const Requests = () => {
   const dispatch = useDispatch();
   const requests = useSelector((store) => store.requests);
   const { darkMode } = useOutletContext();
+  const [isLoading, setIsLoading] = useState(true);
 
   const fetchRequests = async () => {
     try {
@@ -18,6 +19,8 @@ const Requests = () => {
       dispatch(addRequests(res.data.pendingRequests));
     } catch (err) {
       console.error("Error in requests " + err.message);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -38,11 +41,32 @@ const Requests = () => {
     }
   };
 
+  // Show loader while fetching requests
+  if (isLoading) {
+    return (
+      <div
+        className={`flex flex-col items-center justify-center h-[80vh] text-center px-4 transition-all duration-300 ${
+          darkMode ? "bg-slate-900 text-white" : ""
+        }`}
+      >
+        <img
+          src="https://cdn.pixabay.com/animation/2022/10/11/03/16/03-16-39-160_512.gif"
+          alt="Loading requests..."
+          className="w-24 h-24 mb-6"
+        />
+        <h2 className="text-2xl font-semibold animate-pulse">
+          Checking for requests...
+        </h2>
+      </div>
+    );
+  }
+
+  // Show message if no requests
   if (!requests || requests.length === 0) {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[75vh] text-center px-4 transition-colors duration-300 ${
-          darkMode ? "bg-slate-800 text-white" : "bg-white text-gray-800"
+          darkMode ? "bg-slate-800 text-white" : ""
         }`}
       >
         <img
@@ -50,9 +74,7 @@ const Requests = () => {
           alt="No requests"
           className="w-64 h-64 mb-6"
         />
-        <h1 className="text-3xl font-bold mb-2">
-          You're All Caught Up!
-        </h1>
+        <h1 className="text-3xl font-bold mb-2">You're All Caught Up!</h1>
         <p className={`max-w-md mb-6 ${darkMode ? "text-gray-300" : "text-gray-500"}`}>
           No connection requests at the moment. Come back later or explore new users to connect with.
         </p>
@@ -66,9 +88,16 @@ const Requests = () => {
     );
   }
 
+  // Show all requests
   return (
-    <div className={`text-center my-10 transition-colors duration-300 ${darkMode ? "bg-gray-800 text-white" : " text-black"}`}>
-      <h1 className={`font-bold text-2xl mb-6 ${darkMode?"text-white":""}`}>Connection Requests</h1>
+    <div
+      className={`text-center my-10 transition-colors duration-300 ${
+        darkMode ? "bg-gray-800 text-white" : "text-black"
+      }`}
+    >
+      <h1 className={`font-bold text-2xl mb-6 ${darkMode ? "text-white" : ""}`}>
+        Connection Requests
+      </h1>
       {requests.map((request) => {
         const { firstName, lastName, age, gender, about, photoURL, _id } = request.fromUserId;
 
@@ -98,18 +127,14 @@ const Requests = () => {
 
             <div className="flex gap-3">
               <button
-                className={`px-4 py-2 btn  transition ${darkMode?"btn-success":"btn-primary"}`}
-                onClick={() => {
-                  requestReceived("accepted", request._id);
-                }}
+                className={`px-4 py-2 btn transition ${darkMode ? "btn-success" : "btn-primary"}`}
+                onClick={() => requestReceived("accepted", request._id)}
               >
                 Accept
               </button>
               <button
-                className={`px-4 py-2 btn  transition ${darkMode?"btn-info":"btn-secondary"}`}
-                onClick={() => {
-                  requestReceived("rejected", request._id);
-                }}
+                className={`px-4 py-2 btn transition ${darkMode ? "btn-info" : "btn-secondary"}`}
+                onClick={() => requestReceived("rejected", request._id)}
               >
                 Reject
               </button>
