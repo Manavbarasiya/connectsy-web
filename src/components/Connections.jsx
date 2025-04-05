@@ -41,7 +41,7 @@ const Connections = () => {
           className="w-64 h-64 mb-6 drop-shadow-xl transition-transform duration-500 hover:scale-105"
         />
         <h1 className="text-3xl font-bold mb-3">
-          Nothing Here Yet!
+          Nothing Here Yet!!
         </h1>
         <p className={`text-gray-500 max-w-md mb-6 ${darkMode ? "text-gray-300" : ""}`}>
           You haven’t made any connections yet. Go find like-minded people and
