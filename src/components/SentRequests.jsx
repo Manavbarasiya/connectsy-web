@@ -2,46 +2,43 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests, removeRequest } from "../utils/requestSlice";
+import { addRequested, removeRequested } from "../utils/requestedSlice";
 import { useOutletContext } from "react-router-dom";
 
-const Requests = () => {
+const SentRequests = () => {
   const dispatch = useDispatch();
-  const requests = useSelector((store) => store.requests);
   const { darkMode } = useOutletContext();
+  const requested = useSelector((store) => store.requested);
   const [isLoading, setIsLoading] = useState(true);
 
-  const fetchRequests = async () => {
+  const fetchRequestedConnections = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/user/requests/received", {
+      const res = await axios.get(BASE_URL + "/user/requests/requested", {
         withCredentials: true,
       });
-      dispatch(addRequests(res.data.pendingRequests));
+      dispatch(addRequested(res.data.sentRequest));
     } catch (err) {
-      console.error("Error in requests " + err.message);
+      console.log("Error in fetchRequestedConnections " + err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
-  useEffect(() => {
-    fetchRequests();
-  }, []);
-
-  const requestReceived = async (status, _id) => {
+  const handleUnsendRequest = async (requestId) => {
     try {
-      await axios.post(
-        BASE_URL + "/request/review/" + status + "/" + _id,
-        {},
-        { withCredentials: true }
-      );
-      dispatch(removeRequest(_id));
+      await axios.delete(`${BASE_URL}/request/cancel/${requestId}`, {
+        withCredentials: true,
+      });
+      dispatch(removeRequested(requestId));
     } catch (err) {
-      console.log("Error in requestReceived part: " + err.message);
+      console.error("Error unsending request: " + err.message);
     }
   };
 
-  // Show loader while fetching requests
+  useEffect(() => {
+    fetchRequestedConnections();
+  }, []);
+
   if (isLoading) {
     return (
       <div
@@ -55,14 +52,13 @@ const Requests = () => {
           className="w-24 h-24 mb-6"
         />
         <h2 className="text-2xl font-semibold animate-pulse">
-          Checking for requests...
+          Loading sent requests...
         </h2>
       </div>
     );
   }
 
-  // Show message if no requests
-  if (!requests || requests.length === 0) {
+  if (!requested || requested.length === 0) {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[75vh] text-center px-4 transition-colors duration-300 ${
@@ -70,18 +66,18 @@ const Requests = () => {
         }`}
       >
         <img
-          src="https://cdn.pixabay.com/photo/2025/03/19/19/04/man-9481358_1280.jpg"
+          src="https://cdn.pixabay.com/photo/2024/02/29/19/16/ai-generated-8602544_1280.jpg"
           alt="No requests"
           className="w-64 h-64 mb-6"
         />
-        <h1 className="text-3xl font-bold mb-2">You're All Caught Up!</h1>
+        <h1 className="text-3xl font-bold mb-2">No Requests Sent Yet</h1>
         <p
           className={`max-w-md mb-6 ${
             darkMode ? "text-gray-300" : "text-gray-500"
           }`}
         >
-          No connection requests at the moment. Come back later or explore new
-          users to connect with.
+          Looks like you haven't sent any connection requests yet. Start
+          exploring users to connect with.
         </p>
         <a
           href="/"
@@ -93,7 +89,6 @@ const Requests = () => {
     );
   }
 
-  // Show all requests
   return (
     <div
       className={`text-center my-10 transition-colors duration-300 ${
@@ -101,9 +96,9 @@ const Requests = () => {
       }`}
     >
       <h1 className={`font-bold text-2xl mb-6 ${darkMode ? "text-white" : ""}`}>
-        Connection Requests
+        Sent Connection Requests
       </h1>
-      {requests.map((request) => {
+      {requested.map((request) => {
         const {
           firstName,
           lastName,
@@ -113,7 +108,7 @@ const Requests = () => {
           photoURL,
           skills = [],
           _id,
-        } = request.fromUserId;
+        } = request.toUserId;
 
         return (
           <div
@@ -160,22 +155,16 @@ const Requests = () => {
               </div>
             </div>
 
-            <div className="flex gap-3">
+            <div className="flex flex-col gap-2 items-end">
               <button
-                className={`px-4 py-2 btn transition ${
-                  darkMode ? "btn-success" : "btn-primary"
+                className={`px-4 py-2 text-sm rounded-md shadow transition hover:scale-105 ${
+                  darkMode
+                    ? "btn btn-primary"
+                    : "btn btn-secondary"
                 }`}
-                onClick={() => requestReceived("accepted", request._id)}
+                onClick={() => handleUnsendRequest(request._id)}
               >
-                Accept
-              </button>
-              <button
-                className={`px-4 py-2 btn transition ${
-                  darkMode ? "btn-info" : "btn-secondary"
-                }`}
-                onClick={() => requestReceived("rejected", request._id)}
-              >
-                Reject
+                Unsend
               </button>
             </div>
           </div>
@@ -185,4 +174,4 @@ const Requests = () => {
   );
 };
 
-export default Requests;
+export default SentRequests;

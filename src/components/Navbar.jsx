@@ -100,6 +100,14 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                 </Link>
               </li>
               <li>
+                <Link 
+                  to={"/requested"} 
+                  className={darkMode ? 'hover:text-pink-300' : 'hover:text-purple-600'}
+                >
+                  Requested
+                </Link>
+              </li>
+              <li>
                 <a 
                   onClick={handleLogout} 
                   className={darkMode ? 'hover:text-red-400' : 'hover:text-red-500'}

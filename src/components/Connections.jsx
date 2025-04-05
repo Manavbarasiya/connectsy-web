@@ -11,7 +11,7 @@ const Connections = () => {
   const connections = useSelector((store) => store.connections);
   const [isLoading, setIsLoading] = useState(true);
   const navigate = useNavigate();
-  const { darkMode } = useOutletContext();  
+  const { darkMode } = useOutletContext();
 
   const fetchConnections = async () => {
     try {
@@ -49,6 +49,7 @@ const Connections = () => {
     );
   }
 
+
   if (connections.length === 0) {
     return (
       <div
@@ -62,7 +63,11 @@ const Connections = () => {
           className="w-64 h-64 mb-6 drop-shadow-xl transition-transform duration-500 hover:scale-105"
         />
         <h1 className="text-3xl font-bold mb-3">Nothing Here Yet!!</h1>
-        <p className={`text-gray-500 max-w-md mb-6 ${darkMode ? "text-gray-300" : ""}`}>
+        <p
+          className={`text-gray-500 max-w-md mb-6 ${
+            darkMode ? "text-gray-300" : ""
+          }`}
+        >
           You haven’t made any connections yet. Go find like-minded people and
           start building your circle!
         </p>
@@ -82,27 +87,55 @@ const Connections = () => {
         Connections
       </h1>
       {connections.map((connection) => {
-        const { _id, firstName, lastName, age, gender, about, photoURL } = connection;
+        const {
+          _id,
+          firstName,
+          lastName,
+          age,
+          gender,
+          about,
+          photoURL,
+          skills = [],
+        } = connection;
         return (
           <div
             key={_id}
-            className={`flex m-4 p-4 rounded-lg w-1/2 mx-auto shadow-md transition-colors duration-300 ${
+            className={`flex flex-col sm:flex-row items-center m-4 p-4 rounded-lg w-full sm:w-1/2 mx-auto shadow-md transition-colors duration-300 ${
               darkMode ? "bg-slate-700 text-white" : "bg-base-300 text-black"
             }`}
           >
-            <div>
-              <img
-                src={photoURL}
-                alt="photo"
-                className="w-20 h-20 rounded-full object-cover"
-              />
-            </div>
-            <div className="text-left mx-4">
-              <h2 className="font-bold text-xl">{firstName + " " + lastName}</h2>
+            <img
+              src={photoURL}
+              alt="photo"
+              className="w-20 h-20 rounded-full object-cover shadow-md"
+            />
+            <div className="sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
+              <h2 className="font-bold text-xl">
+                {firstName + " " + lastName}
+              </h2>
               {age && gender && (
                 <p className="text-gray-500">{age + ", " + gender}</p>
               )}
-              <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>{about}</p>
+              <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                {about}
+              </p>
+
+              {skills.length > 0 && (
+                <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
+                  {skills.map((skill, index) => (
+                    <span
+                      key={index}
+                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                        darkMode
+                          ? "bg-blue-600 text-white"
+                          : "bg-white text-blue-600 border border-blue-300"
+                      }`}
+                    >
+                      {skill}
+                    </span>
+                  ))}
+                </div>
+              )}
             </div>
           </div>
         );

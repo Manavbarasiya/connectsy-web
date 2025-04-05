@@ -5,6 +5,7 @@ import { useNavigate, useOutletContext } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
 import UserCard from "./UserCard";
+import { X } from "lucide-react";
 
 const EditProfile = ({ user }) => {
   const { darkMode } = useOutletContext();
@@ -12,20 +13,35 @@ const EditProfile = ({ user }) => {
   const [firstName, setFirstName] = useState(user.firstName);
   const [lastName, setLastName] = useState(user.lastName);
   const [age, setAge] = useState(user.age || 18);
-  const [about, setAbout] = useState(user.about);
+  const [about, setAbout] = useState(user.about || "");
   const [gender, setGender] = useState(user.gender || "other");
   const [error, setError] = useState("");
-  const [photoURL, setPhotoURL] = useState(user.photoURL);
+  const [photoURL, setPhotoURL] = useState(user.photoURL || "");
+  const [skills, setSkills] = useState(user.skills || []);
+  const [newSkill, setNewSkill] = useState("");
   const [showToast, setShowToast] = useState(false);
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
+  const addSkill = () => {
+    const trimmedSkill = newSkill.trim();
+    if (trimmedSkill && !skills.includes(trimmedSkill)) {
+      setSkills([...skills, trimmedSkill]);
+      setNewSkill("");
+    }
+  };
+
+  const removeSkill = (skillToRemove) => {
+    setSkills(skills.filter((skill) => skill !== skillToRemove));
+  };
 
   const saveProfile = async () => {
     setError("");
     try {
       const res = await axios.patch(
         BASE_URL + "/profile/edit",
-        { firstName, lastName, age, about, gender, photoURL },
+        { firstName, lastName, age, about, gender, photoURL, skills },
         { withCredentials: true }
       );
       dispatch(addUser(res.data));
@@ -33,13 +49,13 @@ const EditProfile = ({ user }) => {
       setTimeout(() => setShowToast(false), 3000);
       navigate("/");
     } catch (err) {
-      setError(err.response.data);
+      setError(err.response.data || "Failed to save profile.");
     }
   };
 
   return (
     <div className="flex justify-center">
-      <div className="flex justify-center space-x-10 my-10 mx-10">
+      <div className="flex justify-center space-x-10 my-10 mx-10 flex-wrap md:flex-nowrap">
         {/* Profile Edit Form */}
         <div
           className={`flex-1 card w-96 shadow-lg border transition-colors duration-500 ${
@@ -51,19 +67,13 @@ const EditProfile = ({ user }) => {
           <div className="card-body">
             <h2 className="card-title flex justify-center">Edit Profile</h2>
             <div>
-              {[
-                { label: "First Name", value: firstName, onChange: setFirstName },
+              {[{ label: "First Name", value: firstName, onChange: setFirstName },
                 { label: "Last Name", value: lastName, onChange: setLastName },
                 { label: "Photo URL", value: photoURL, onChange: setPhotoURL },
-                { label: "Age", value: age, onChange: setAge, type: "number" },
+                { label: "Age", value: age, onChange: setAge, type: "number" }
               ].map(({ label, value, onChange, type = "text" }) => (
                 <fieldset className="mb-3" key={label}>
-                  <legend
-                    className="text-sm font-medium mb-1"
-                    style={{ marginBottom: "4px" }}
-                  >
-                    {label}
-                  </legend>
+                  <legend className="text-sm font-medium mb-1">{label}</legend>
                   <input
                     type={type}
                     className={`input input-bordered w-full ${
@@ -89,7 +99,48 @@ const EditProfile = ({ user }) => {
                   <option value="other">Other</option>
                 </select>
               </fieldset>
-
+              {/* Skills Section */}
+              <fieldset className="mb-3">
+                <legend className="text-sm font-medium mb-1">Skills</legend>
+                <div className="flex items-center gap-2 mb-2">
+                  <input
+                    type="text"
+                    placeholder="e.g. React, Node.js"
+                    className={`input input-bordered flex-1 ${
+                      darkMode ? "bg-gray-800 text-white border-gray-600" : ""
+                    }`}
+                    value={newSkill}
+                    onChange={(e) => setNewSkill(e.target.value)}
+                    onKeyDown={(e) => e.key === "Enter" && addSkill()}
+                  />
+                  <button
+                    className={`btn btn-sm  ${darkMode?"btn-primary":"btn-warning"}`}
+                    onClick={addSkill}
+                  >
+                    Add
+                  </button>
+                </div>
+                <div className="flex flex-wrap gap-2">
+                  {skills.map((skill, idx) => (
+                    <span
+                      key={idx}
+                      className={`flex items-center px-3 py-1 rounded-full text-sm font-medium ${
+                        darkMode
+                          ? "bg-blue-600 text-white"
+                          : "bg-blue-100 text-blue-700"
+                      }`}
+                    >
+                      {skill}
+                      <button
+                        className="ml-2 hover:text-red-500"
+                        onClick={() => removeSkill(skill)}
+                      >
+                        <X size={14} />
+                      </button>
+                    </span>
+                  ))}
+                </div>
+              </fieldset>
               <fieldset className="mb-3">
                 <legend className="text-sm font-medium mb-1">About</legend>
                 <textarea
@@ -101,6 +152,8 @@ const EditProfile = ({ user }) => {
                   rows="3"
                 />
               </fieldset>
+
+              
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
@@ -113,9 +166,9 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
 
-        {/* Live Preview Card */}
+        {/* Live Preview */}
         <div className="flex-1">
-          <UserCard user={{ firstName, lastName, age, about, gender, photoURL }} />
+          <UserCard user={{ firstName, lastName, age, about, gender, photoURL, skills }} />
         </div>
       </div>
 
