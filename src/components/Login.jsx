@@ -9,8 +9,8 @@ import { useOutletContext } from "react-router-dom";  // For dark mode context
 const Login = () => {
   const { darkMode } = useOutletContext();  // Get dark mode status from context
 
-  const [emailId, setEmailId] = useState("Frank@gmail.com");
-  const [password, setPassword] = useState("Frank@1234");
+  const [emailId, setEmailId] = useState("");
+  const [password, setPassword] = useState("");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
