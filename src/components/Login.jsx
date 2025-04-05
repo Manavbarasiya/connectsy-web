@@ -4,122 +4,111 @@ import { useDispatch } from "react-redux";
 import { addUser } from "../utils/userSlice";
 import { useNavigate } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
+import { useOutletContext } from "react-router-dom";  // For dark mode context
 
 const Login = () => {
+  const { darkMode } = useOutletContext();  // Get dark mode status from context
+
   const [emailId, setEmailId] = useState("Frank@gmail.com");
   const [password, setPassword] = useState("Frank@1234");
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [error, setError] = useState("");
-  const [isLoginForm, setIsLoginForm] = useState(true); // Default to Login form
+  const [isLoginForm, setIsLoginForm] = useState(true);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   const handleLogin = async () => {
     try {
-      const res = await axios.post(
-        BASE_URL + "/login",
-        { emailId, password },
-        { withCredentials: true }
-      );
+      const res = await axios.post(BASE_URL + "/login", { emailId, password }, { withCredentials: true });
       dispatch(addUser(res.data));
       navigate("/");
     } catch (err) {
       setError(err?.response?.data || "Something went wrong");
-      console.error(err);
     }
   };
 
   const handleSignUp = async () => {
     try {
-      const res = await axios.post(
-        BASE_URL + "/signup",
-        { firstName, lastName, emailId, password },
-        { withCredentials: true }
-      );
-      console.log(res.data.data);
+      const res = await axios.post(BASE_URL + "/signup", { firstName, lastName, emailId, password }, { withCredentials: true });
       dispatch(addUser(res.data.data));
       navigate("/profile");
     } catch (err) {
       setError(err?.response?.data || "Signup failed");
-      console.error(err);
     }
   };
 
   return (
-    <div className="flex justify-center my-10">
-      <div className="card bg-base-300 w-96 shadow-sm">
-        <div className="card-body">
-          <h2 className="card-title flex justify-center">
-            {isLoginForm ? "Login" : "Sign Up"}
-          </h2>
-          <div>
-            {/* Sign Up Fields (Only Show if Signing Up) */}
-            {!isLoginForm && (
-              <>
-                <fieldset className="fieldset py-3">
-                  <legend className="fieldset-legend">First Name</legend>
-                  <input
-                    type="text"
-                    className="input"
-                    value={firstName}
-                    onChange={(e) => setFirstName(e.target.value)}
-                  />
-                </fieldset>
-                <fieldset className="fieldset py-3">
-                  <legend className="fieldset-legend">Last Name</legend>
-                  <input
-                    type="text"
-                    className="input"
-                    value={lastName}
-                    onChange={(e) => setLastName(e.target.value)}
-                  />
-                </fieldset>
-              </>
-            )}
+    <div
+      className={`flex justify-center items-center min-h-[85vh] transition-all duration-500 ease-in-out ${
+        darkMode ? "bg-slate-800" : "bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-100"
+      }`}
+    >
+      <div
+        className={`card w-96 shadow-xl rounded-xl p-6 border transition-colors duration-500 ${
+          darkMode ? "bg-slate-700 text-white border-purple-600" : "bg-white bg-opacity-90 backdrop-blur-md border-purple-200"
+        }`}
+      >
+        <h2
+          className={`text-center text-2xl font-bold mb-4 ${
+            darkMode ? "text-purple-300" : "text-purple-700"
+          }`}
+        >
+          {isLoginForm ? "Login" : "Sign Up"}
+        </h2>
 
-            {/* Common Fields */}
-            <fieldset className="fieldset py-3">
-              <legend className="fieldset-legend">Email ID</legend>
-              <input
-                type="text"
-                className="input"
-                value={emailId}
-                onChange={(e) => setEmailId(e.target.value)}
-              />
-            </fieldset>
-            <fieldset className="fieldset py-3">
-              <legend className="fieldset-legend">Password</legend>
-              <input
-                type="password"
-                className="input"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-              />
-            </fieldset>
-          </div>
+        {!isLoginForm && (
+          <>
+            <input
+              type="text"
+              placeholder="First Name"
+              className={`input input-bordered w-full mb-3 ${darkMode ? "bg-gray-800 text-white" : ""}`}
+              value={firstName}
+              onChange={(e) => setFirstName(e.target.value)}
+            />
+            <input
+              type="text"
+              placeholder="Last Name"
+              className={`input input-bordered w-full mb-3 ${darkMode ? "bg-gray-800 text-white" : ""}`}
+              value={lastName}
+              onChange={(e) => setLastName(e.target.value)}
+            />
+          </>
+        )}
 
-          <p className="text-red-600">{error}</p>
+        <input
+          type="email"
+          placeholder="Email"
+          className={`input input-bordered w-full mb-3 ${darkMode ? "bg-gray-800 text-white" : ""}`}
+          value={emailId}
+          onChange={(e) => setEmailId(e.target.value)}
+        />
+        <input
+          type="password"
+          placeholder="Password"
+          className={`input input-bordered w-full mb-3 ${darkMode ? "bg-gray-800 text-white" : ""}`}
+          value={password}
+          onChange={(e) => setPassword(e.target.value)}
+        />
 
-          {/* Login/SignUp Button */}
-          <div className="card-actions justify-center m-2">
-            <button
-              className="btn btn-primary"
-              onClick={isLoginForm ? handleLogin : handleSignUp} // ✅ Calls the correct function dynamically
-            >
-              {isLoginForm ? "Login" : "Sign Up"}
-            </button>
-          </div>
+        {error && <p className="text-red-500 text-sm text-center mb-2">{error}</p>}
 
-          {/* Toggle between Login & Signup */}
-          <p
-            className="m-auto cursor-pointer text-blue-600 hover:underline"
-            onClick={() => setIsLoginForm((prev) => !prev)}
-          >
-            {isLoginForm ? "New User? Sign Up here" : "Existing User? Login here"}
-          </p>
-        </div>
+        <button
+          className={`btn btn-primary w-full transition-all hover:scale-105 ${darkMode ? "bg-purple-600 hover:bg-purple-500" : ""}`}
+          onClick={isLoginForm ? handleLogin : handleSignUp}
+        >
+          {isLoginForm ? "Login" : "Sign Up"}
+        </button>
+
+        <p
+          onClick={() => setIsLoginForm((prev) => !prev)}
+          className={`mt-4 text-sm text-center cursor-pointer ${
+            darkMode ? "text-blue-400 hover:underline" : "text-blue-600 hover:underline"
+          }`}
+        >
+          {isLoginForm ? "New User? Sign Up here" : "Existing User? Login here"}
+        </p>
       </div>
     </div>
   );
