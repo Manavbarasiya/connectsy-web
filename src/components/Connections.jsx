@@ -34,7 +34,7 @@ const Connections = () => {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[80vh] text-center px-4 transition-all duration-300 ${
-          darkMode ? "bg-slate-900 text-white" : ""
+          darkMode ? "bg-gray-800 text-white" : ""
         }`}
       >
         <img
@@ -49,12 +49,11 @@ const Connections = () => {
     );
   }
 
-
   if (connections.length === 0) {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[75vh] text-center px-4 transition-colors duration-300 ${
-          darkMode ? "bg-slate-800 text-white" : ""
+          darkMode ? "bg-gray-800 text-white" : ""
         }`}
       >
         <img
@@ -109,7 +108,7 @@ const Connections = () => {
               alt="photo"
               className="w-20 h-20 rounded-full object-cover shadow-md"
             />
-            <div className="sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
+            <div className="relative sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
               <h2 className="font-bold text-xl">
                 {firstName + " " + lastName}
               </h2>
@@ -136,6 +135,14 @@ const Connections = () => {
                   ))}
                 </div>
               )}
+
+              {/* Chat Button on the side */}
+              <button
+                onClick={() => navigate(`/chat/${_id}`)}
+                className={`sm:absolute sm:right-4 btn sm:top-4 mt-3 sm:mt-0 ${darkMode?"btn-primary":"btn-secondary"} text-white px-4 py-2 rounded-full transition-transform duration-200 hover:scale-105`}
+              >
+                💬 Chat
+              </button>
             </div>
           </div>
         );

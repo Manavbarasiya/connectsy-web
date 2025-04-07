@@ -61,7 +61,7 @@ const EditProfile = ({ user }) => {
           className={`flex-1 card w-96 shadow-lg border transition-colors duration-500 ${
             darkMode
               ? "bg-slate-700 border-gray-600 text-white"
-              : "bg-base-300 text-black"
+              : "bg-pink-100 text-black"
           }`}
         >
           <div className="card-body">

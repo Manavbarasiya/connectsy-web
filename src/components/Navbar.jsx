@@ -31,7 +31,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
     <div className={`navbar transition-colors duration-300 ${
       darkMode 
         ? 'bg-gradient-to-r from-gray-900 via-gray-800 to-gray-700 text-gray-100' 
-        : 'bg-gradient-to-r from-indigo-300 via-purple-300 to-pink-300 text-white'
+        : 'bg-gradient-to-r from-indigo-400 via-purple-300 to-pink-300 text-white'
     } shadow-md`}>
       <div className="flex-1">
         <Link to={"/"} className="btn btn-ghost text-2xl font-bold tracking-wider">
@@ -105,6 +105,14 @@ const Navbar = ({ darkMode, setDarkMode }) => {
                   className={darkMode ? 'hover:text-pink-300' : 'hover:text-purple-600'}
                 >
                   Requested
+                </Link>
+              </li>
+              <li>
+                <Link 
+                  to={"/premium"} 
+                  className={darkMode ? 'hover:text-pink-300' : 'hover:text-purple-600'}
+                >
+                  Premium
                 </Link>
               </li>
               <li>

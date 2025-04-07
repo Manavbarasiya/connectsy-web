@@ -24,6 +24,7 @@ const SentRequests = () => {
     }
   };
 
+
   const handleUnsendRequest = async (requestId) => {
     try {
       await axios.delete(`${BASE_URL}/request/cancel/${requestId}`, {
@@ -43,7 +44,7 @@ const SentRequests = () => {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[80vh] text-center px-4 transition-all duration-300 ${
-          darkMode ? "bg-slate-900 text-white" : ""
+          darkMode ? "bg-gray-800 text-white" : ""
         }`}
       >
         <img
@@ -66,7 +67,7 @@ const SentRequests = () => {
         }`}
       >
         <img
-          src="https://cdn.pixabay.com/photo/2024/02/29/19/16/ai-generated-8602544_1280.jpg"
+          src="https://cdn.pixabay.com/photo/2023/01/05/22/17/ai-generated-7699943_1280.png"
           alt="No requests"
           className="w-64 h-64 mb-6"
         />
@@ -88,7 +89,6 @@ const SentRequests = () => {
       </div>
     );
   }
-
   return (
     <div
       className={`text-center my-10 transition-colors duration-300 ${
@@ -158,9 +158,7 @@ const SentRequests = () => {
             <div className="flex flex-col gap-2 items-end">
               <button
                 className={`px-4 py-2 text-sm rounded-md shadow transition hover:scale-105 ${
-                  darkMode
-                    ? "btn btn-primary"
-                    : "btn btn-secondary"
+                  darkMode ? "btn btn-primary" : "btn btn-secondary"
                 }`}
                 onClick={() => handleUnsendRequest(request._id)}
               >

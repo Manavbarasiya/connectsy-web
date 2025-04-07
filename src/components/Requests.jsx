@@ -1,9 +1,9 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequests, removeRequest } from "../utils/requestSlice";
 import { useOutletContext } from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
+import { addRequests, removeRequest } from "../utils/requestSlice";
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -46,7 +46,7 @@ const Requests = () => {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[80vh] text-center px-4 transition-all duration-300 ${
-          darkMode ? "bg-slate-900 text-white" : ""
+          darkMode ? "bg-gray-800 text-white" : ""
         }`}
       >
         <img
@@ -66,7 +66,7 @@ const Requests = () => {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[75vh] text-center px-4 transition-colors duration-300 ${
-          darkMode ? "bg-slate-800 text-white" : ""
+          darkMode ? "bg-gray-800 text-white" : ""
         }`}
       >
         <img

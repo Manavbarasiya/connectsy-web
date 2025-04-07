@@ -9,6 +9,9 @@ import Feed from "./components/Feed";
 import Connections from "./components/Connections";
 import Requests from "./components/Requests";
 import SentRequests from "./components/SentRequests";
+import Premium from "./components/Premium";
+import ThankYou from "./components/ThankYou";
+import Chat from "./components/Chat";
 function App() {
   return (
     <Provider store={appStore}>
@@ -20,7 +23,11 @@ function App() {
             <Route path="profile" element={<Profile />} />
             <Route path="connections" element={<Connections />} />
             <Route path="requested" element={<SentRequests/>}/>
+            <Route path="premium" element={<Premium/>}/>
             <Route path="requests" element={<Requests />} />
+            <Route path="/chat/:targetUserId" element={<Chat />} />
+            <Route path="thank-you" element={<ThankYou />} />
+            
           </Route>
         </Routes>
       </BrowserRouter>

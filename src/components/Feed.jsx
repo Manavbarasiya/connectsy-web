@@ -32,7 +32,7 @@ const Feed = () => {
       <div
         className={`flex flex-col items-center justify-center h-[80vh] transition-all duration-300 ${
           darkMode
-            ? "bg-slate-900 text-white"
+            ? "bg-gray-800 text-white"
             : "bg-gradient-to-r from-purple-100 to-pink-200 text-gray-800"
         }`}
       >
