@@ -3,14 +3,14 @@ import React, { useEffect, useState } from "react";
 import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addRequested, removeRequested } from "../utils/requestedSlice";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
 const SentRequests = () => {
   const dispatch = useDispatch();
   const { darkMode } = useOutletContext();
   const requested = useSelector((store) => store.requested);
   const [isLoading, setIsLoading] = useState(true);
-
+  const navigate = useNavigate();
   const fetchRequestedConnections = async () => {
     try {
       const res = await axios.get(BASE_URL + "/user/requests/requested", {
@@ -23,7 +23,6 @@ const SentRequests = () => {
       setIsLoading(false);
     }
   };
-
 
   const handleUnsendRequest = async (requestId) => {
     try {
@@ -117,11 +116,15 @@ const SentRequests = () => {
               darkMode ? "bg-slate-700 text-white" : "bg-gray-100 text-black"
             }`}
           >
-            <div className="flex items-center">
+            <div className="flex items-center ">
               <img
                 src={photoURL || "https://via.placeholder.com/100"}
                 alt="profile"
-                className="w-20 h-20 rounded-full object-cover border border-gray-300"
+                onClick={() => {
+                  navigate("/user/" + _id);
+                  window.scrollTo(0, 0);
+                }}
+                className="w-20 cursor-pointer h-20 rounded-full object-cover border border-gray-300"
               />
               <div className="text-left mx-4">
                 <h2 className="font-bold text-xl">

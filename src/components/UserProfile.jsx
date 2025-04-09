@@ -116,12 +116,12 @@ const UserProfile = () => {
       </div>
 
       {/* Profile Details */}
-      <div className="py-5 px-6 space-y-4 text-center">
-        <h2 className="text-2xl font-semibold">
+      <div className="py-3 px-6 space-y-4 text-center">
+        <h2 className="text-2xl -my-0.5 font-semibold">
           {user.firstName} {user.lastName}
         </h2>
         {user.age && user.gender && (
-          <p className="text-sm text-gray-600 dark:text-gray-300">
+          <p className="text-sm my-1 dark:text-gray-300">
             {user.age}, {user.gender}
           </p>
         )}
@@ -129,7 +129,7 @@ const UserProfile = () => {
 
         {/* Skills */}
         {user.skills?.length > 0 && (
-          <div className="flex flex-wrap justify-center gap-2 mt-2">
+          <div className="flex flex-wrap justify-center gap-2 mt-2 mb-2">
             {user.skills.map((skill, index) => (
               <span
                 key={index}

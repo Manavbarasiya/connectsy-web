@@ -105,8 +105,13 @@ const Connections = () => {
           >
             <img
               src={photoURL}
+              onClick={() => {
+                navigate("/user/" + _id);
+                window.scrollTo(0, 0);
+              }}
+              
               alt="photo"
-              className="w-20 h-20 rounded-full object-cover shadow-md"
+              className="w-20 h-20 rounded-full object-cover shadow-md cursor-pointer"
             />
             <div className="relative sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
               <h2 className="font-bold text-xl">

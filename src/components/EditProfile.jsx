@@ -143,7 +143,7 @@ const EditProfile = ({ user }) => {
             <div>
               {[{ label: "First Name", value: firstName, onChange: setFirstName },
                 { label: "Last Name", value: lastName, onChange: setLastName },
-                { label: "Photo URL", value: photoURL, onChange: setPhotoURL },
+                { label: "Profile URL", value: photoURL, onChange: setPhotoURL },
                 { label: "Age", value: age, onChange: setAge, type: "number" }
               ].map(({ label, value, onChange, type = "text" }) => (
                 <fieldset className="mb-3" key={label}>
