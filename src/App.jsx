@@ -12,6 +12,7 @@ import SentRequests from "./components/SentRequests";
 import Premium from "./components/Premium";
 import ThankYou from "./components/ThankYou";
 import Chat from "./components/Chat";
+import UserProfile from "./components/UserProfile";
 function App() {
   return (
     <Provider store={appStore}>
@@ -26,6 +27,7 @@ function App() {
             <Route path="premium" element={<Premium/>}/>
             <Route path="requests" element={<Requests />} />
             <Route path="/chat/:targetUserId" element={<Chat />} />
+            <Route path="/user/:userId" element={<UserProfile />} />
             <Route path="thank-you" element={<ThankYou />} />
             
           </Route>

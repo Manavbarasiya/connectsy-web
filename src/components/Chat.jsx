@@ -5,18 +5,22 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { createSocketConnection } from "../utils/socket";
 
+
+
 const Chat = () => {
   const { targetUserId } = useParams();
   const [messages, setMessages] = useState([]);
   const [newMessage, setNewMessage] = useState("");
   const [targetUser, setTargetUser] = useState(null);
   const [loading, setLoading] = useState(true);
+  const [showProfile, setShowProfile] = useState(false);
   const socketRef = useRef(null);
   const { darkMode } = useOutletContext();
   const navigate = useNavigate();
   const bottomRef = useRef(null);
   const user = useSelector((store) => store.user);
   const userId = user?._id;
+  
 
   // Fetch initial chat history
   const fetchChatMessages = async () => {
@@ -30,6 +34,8 @@ const Chat = () => {
         const { firstName, lastName } = senderId;
         return {
           firstName,
+
+    
           lastName,
           text,
           timestamp: new Date(createdAt).toLocaleTimeString([], {
@@ -146,6 +152,7 @@ const Chat = () => {
             src={targetUser.photoURL}
             alt="Profile"
             className="w-10 h-10 rounded-full object-cover"
+            onClick={() => navigate(`/user/${targetUser._id}`)}
           />
         )}
         <h1 className="text-xl font-semibold">
@@ -241,7 +248,9 @@ const Chat = () => {
           </div>
         </>
       )}
+      
     </div>
+    
   );
 };
 
