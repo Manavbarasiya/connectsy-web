@@ -1,11 +1,11 @@
 import axios from "axios";
+import { X } from "lucide-react";
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { addUser } from "../utils/userSlice";
 import UserCard from "./UserCard";
-import { X } from "lucide-react";
 
 const EditProfile = ({ user }) => {
   const { darkMode } = useOutletContext();
@@ -19,7 +19,10 @@ const EditProfile = ({ user }) => {
   const [photoURL, setPhotoURL] = useState(user.photoURL || "");
   const [skills, setSkills] = useState(user.skills || []);
   const [newSkill, setNewSkill] = useState("");
+  const [photos, setPhotos] = useState(user.photos || []);
   const [showToast, setShowToast] = useState(false);
+  const [deletingPhotoURL, setDeletingPhotoURL] = useState(null);
+  const [uploading, setUploading] = useState(false);
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -36,29 +39,100 @@ const EditProfile = ({ user }) => {
     setSkills(skills.filter((skill) => skill !== skillToRemove));
   };
 
+  const handleDeletePhoto = async (urlToDelete) => {
+    setDeletingPhotoURL(urlToDelete);
+    try {
+      await axios.delete(`${BASE_URL}/profile/delete-photo`, {
+        data: { photoURL: urlToDelete },
+        withCredentials: true,
+      });
+      setPhotos((prev) => prev.filter((url) => url !== urlToDelete));
+    } catch (err) {
+      console.error("Failed to delete photo:", err);
+      setError("Could not delete photo. Please try again.");
+    } finally {
+      setDeletingPhotoURL(null);
+    }
+  };
+
+  const uploadSinglePhoto = async (file) => {
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("photos", file);
+
+    try {
+      await axios.post(`${BASE_URL}/profile/upload-photos`, formData, {
+        withCredentials: true,
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+
+      const response = await axios.get(`${BASE_URL}/profile/getPhotos`, {
+        withCredentials: true,
+      });
+
+      setPhotos(response.data.photos);
+    } catch (err) {
+      console.error("Failed to upload image:", err);
+      setError("Could not upload photo. Try again.");
+    } finally {
+      setUploading(false);
+    }
+  };
+
   const saveProfile = async () => {
     setError("");
+
+    if (photos.length < 2) {
+      setError("Select at least 2 photos to complete your bio.");
+      return;
+    }
+
+    if (photos.length > 5) {
+      setError("Max limit is 5 photos.");
+      return;
+    }
+
     try {
       const res = await axios.patch(
-        BASE_URL + "/profile/edit",
-        { firstName, lastName, age, about, gender, photoURL, skills },
+        `${BASE_URL}/profile/edit`,
+        {
+          firstName,
+          lastName,
+          age,
+          about,
+          gender,
+          photoURL,
+          skills,
+          photos,
+        },
         { withCredentials: true }
       );
+
       dispatch(addUser(res.data));
       setShowToast(true);
       setTimeout(() => setShowToast(false), 3000);
       navigate("/");
     } catch (err) {
-      setError(err.response.data || "Failed to save profile.");
+      console.error("Error saving profile:", err);
+      setError(err.response?.data || "Failed to save profile.");
     }
   };
 
   return (
-    <div className="flex justify-center">
+    <div className="flex justify-center relative">
+      {/* Blur overlay on UserCard when uploading */}
+      {uploading && (
+        <div className="absolute inset-0 z-10 bg-black/40 flex items-center justify-center backdrop-blur-sm rounded-lg">
+          <div className="text-white text-lg flex items-center gap-2">
+            <span className="loading loading-spinner"></span>
+            <span>Uploading image...</span>
+          </div>
+        </div>
+      )}
+
       <div className="flex justify-center space-x-10 my-10 mx-10 flex-wrap md:flex-nowrap">
-        {/* Profile Edit Form */}
         <div
-          className={`flex-1 card w-96 shadow-lg border transition-colors duration-500 ${
+          className={`flex-1 card w-[450px] shadow-lg border transition-colors duration-500 ${
             darkMode
               ? "bg-slate-700 border-gray-600 text-white"
               : "bg-pink-100 text-black"
@@ -99,7 +173,8 @@ const EditProfile = ({ user }) => {
                   <option value="other">Other</option>
                 </select>
               </fieldset>
-              {/* Skills Section */}
+
+              {/* Skills */}
               <fieldset className="mb-3">
                 <legend className="text-sm font-medium mb-1">Skills</legend>
                 <div className="flex items-center gap-2 mb-2">
@@ -114,7 +189,9 @@ const EditProfile = ({ user }) => {
                     onKeyDown={(e) => e.key === "Enter" && addSkill()}
                   />
                   <button
-                    className={`btn btn-sm  ${darkMode?"btn-primary":"btn-warning"}`}
+                    className={`btn btn-sm ${
+                      darkMode ? "btn-primary" : "btn-warning"
+                    }`}
                     onClick={addSkill}
                   >
                     Add
@@ -141,6 +218,8 @@ const EditProfile = ({ user }) => {
                   ))}
                 </div>
               </fieldset>
+
+              {/* About */}
               <fieldset className="mb-3">
                 <legend className="text-sm font-medium mb-1">About</legend>
                 <textarea
@@ -153,7 +232,73 @@ const EditProfile = ({ user }) => {
                 />
               </fieldset>
 
-              
+              {/* Photos */}
+              <fieldset className="mb-3">
+                <legend className="text-sm font-medium mb-1">
+                  Profile Photos
+                </legend>
+                <p className="text-xs text-gray-500 mb-2">
+                  You can upload up to 5 photos. Click <strong>+</strong> to add more.
+                </p>
+                <div className="grid grid-cols-3 gap-3">
+                  {[...Array(5)].map((_, index) => {
+                    const imageURL = photos[index];
+
+                    return (
+                      <div
+                        key={index}
+                        className="relative w-24 h-24 rounded-lg border flex items-center justify-center bg-gray-100 dark:bg-gray-700"
+                      >
+                        {imageURL ? (
+                          <>
+                            <img
+                              src={imageURL}
+                              alt={`Uploaded ${index}`}
+                              className="w-full h-full object-cover rounded-lg"
+                            />
+                            {(deletingPhotoURL === imageURL || uploading) && (
+                              <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center rounded-lg text-white text-sm">
+                                <span className="loading loading-spinner mb-1"></span>
+                                <span>Processing...</span>
+                              </div>
+                            )}
+                            <button
+                              className="absolute top-1 right-1 bg-white/80 hover:bg-red-500 text-black hover:text-white p-1 rounded-full transition-opacity"
+                              onClick={() => handleDeletePhoto(imageURL)}
+                              title="Delete Photo"
+                              disabled={deletingPhotoURL === imageURL || uploading}
+                            >
+                              <X size={14} />
+                            </button>
+                          </>
+                        ) : (
+                          <label
+                            htmlFor={`photoInput-${index}`}
+                            className="flex flex-col items-center justify-center w-full h-full cursor-pointer hover:bg-gray-200 dark:hover:bg-gray-600 transition-colors"
+                          >
+                            <span className="text-2xl font-bold text-gray-500 dark:text-gray-300">
+                              +
+                            </span>
+                            <input
+                              id={`photoInput-${index}`}
+                              type="file"
+                              accept="image/*"
+                              className="hidden"
+                              onChange={(e) => {
+                                const file = e.target.files[0];
+                                if (file) {
+                                  uploadSinglePhoto(file);
+                                }
+                              }}
+                              disabled={uploading}
+                            />
+                          </label>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </fieldset>
             </div>
 
             {error && <p className="text-red-500">{error}</p>}
@@ -166,9 +311,21 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
 
-        {/* Live Preview */}
-        <div className="flex-1">
-          <UserCard user={{ firstName, lastName, age, about, gender, photoURL, skills }} />
+        <div className="flex-1 relative">
+          <div className={`${uploading ? "blur-sm pointer-events-none" : ""}`}>
+            <UserCard
+              user={{
+                firstName,
+                lastName,
+                age,
+                about,
+                gender,
+                photoURL,
+                skills,
+                photos,
+              }}
+            />
+          </div>
         </div>
       </div>
 
