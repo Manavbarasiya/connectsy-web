@@ -109,7 +109,6 @@ const Connections = () => {
                 navigate("/user/" + _id);
                 window.scrollTo(0, 0);
               }}
-              
               alt="photo"
               className="w-20 h-20 rounded-full object-cover shadow-md cursor-pointer"
             />
@@ -121,7 +120,20 @@ const Connections = () => {
                 <p className="text-gray-500">{age + ", " + gender}</p>
               )}
               <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                {about}
+                {about?.split(" ").length > 15
+                  ? `${about.split(" ").slice(0, 15).join(" ")}... `
+                  : about}
+                {about?.split(" ").length > 15 && (
+                  <span
+                    className="text-blue-500 cursor-pointer hover:underline ml-1"
+                    onClick={() => {
+                      navigate("/user/" + _id);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  >
+                    know more
+                  </span>
+                )}
               </p>
 
               {skills.length > 0 && (
@@ -144,7 +156,9 @@ const Connections = () => {
               {/* Chat Button on the side */}
               <button
                 onClick={() => navigate(`/chat/${_id}`)}
-                className={`sm:absolute sm:right-4 btn sm:top-4 mt-3 sm:mt-0 ${darkMode?"btn-primary":"btn-secondary"} text-white px-4 py-2 rounded-full transition-transform duration-200 hover:scale-105`}
+                className={`sm:absolute sm:right-4 btn sm:top-4 mt-3 sm:mt-0 ${
+                  darkMode ? "btn-primary" : "btn-secondary"
+                } text-white px-4 py-2 rounded-full transition-transform duration-200 hover:scale-105`}
               >
                 💬 Chat
               </button>

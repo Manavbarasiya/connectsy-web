@@ -140,11 +140,22 @@ const Requests = () => {
                 {age && gender && (
                   <p className="text-gray-500">{age + ", " + gender}</p>
                 )}
-                <p
-                  className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}
-                >
-                  {about || "No bio available"}
-                </p>
+                <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                {about?.split(" ").length > 15
+                  ? `${about.split(" ").slice(0, 15).join(" ")}... `
+                  : about}
+                {about?.split(" ").length > 15 && (
+                  <span
+                    className="text-blue-500 cursor-pointer hover:underline ml-1"
+                    onClick={() => {
+                      navigate("/user/" + _id);
+                      window.scrollTo({ top: 0, behavior: "smooth" });
+                    }}
+                  >
+                    know more
+                  </span>
+                )}
+              </p>
 
                 {skills.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-2">
