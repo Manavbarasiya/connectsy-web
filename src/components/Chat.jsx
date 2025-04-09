@@ -13,7 +13,6 @@ const Chat = () => {
   const [loading, setLoading] = useState(true);
   const socketRef = useRef(null);
   const { darkMode } = useOutletContext();
-  console.log(darkMode);
   const navigate = useNavigate();
   const bottomRef = useRef(null);
   const user = useSelector((store) => store.user);

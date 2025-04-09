@@ -8,7 +8,6 @@ const Premium = () => {
 
   const handleBuyClick = async (type) => {
     try {
-        console.log(type);
       const order = await axios.post(
         BASE_URL + "/payment/create",
         { membershipType:type },
