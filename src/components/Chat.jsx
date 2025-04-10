@@ -4,6 +4,7 @@ import { useSelector } from "react-redux";
 import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { createSocketConnection } from "../utils/socket";
+import EmojiPicker from "emoji-picker-react";
 
 const Chat = () => {
   const { targetUserId } = useParams();
@@ -14,9 +15,12 @@ const Chat = () => {
   const [showProfile, setShowProfile] = useState(false);
   const socketRef = useRef(null);
   const { darkMode } = useOutletContext();
+  const [showEmojiPicker, setShowEmojiPicker] = useState(false);
+
   const navigate = useNavigate();
   const bottomRef = useRef(null);
   const user = useSelector((store) => store.user);
+  const chatContainerRef = useRef(null);
   const userId = user?._id;
 
   // Fetch initial chat history
@@ -52,10 +56,16 @@ const Chat = () => {
       setLoading(false);
     }
   };
+  const handleEmojiClick = (emojiData) => {
+    setNewMessage((prev) => prev + emojiData.emoji);
+  };
 
   // Scroll to bottom on new message
   useEffect(() => {
-    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (chatContainerRef.current) {
+      chatContainerRef.current.scrollTop =
+        chatContainerRef.current.scrollHeight;
+    }
   }, [messages]);
 
   // Fetch on mount
@@ -178,7 +188,10 @@ const Chat = () => {
       ) : (
         <>
           {/* Chat messages */}
-          <div className="flex-1 overflow-y-auto p-5 space-y-3 no-scrollbar">
+          <div
+            ref={chatContainerRef}
+            className="flex-1 overflow-y-auto p-5 space-y-3 no-scrollbar"
+          >
             {messages.length === 0 ? (
               <div
                 className={`text-center mt-10 ${
@@ -224,12 +237,13 @@ const Chat = () => {
 
           {/* Input area */}
           <div
-            className={`p-5 border-t flex items-center gap-2 ${
+            className={`relative p-5 border-t flex items-center gap-2 ${
               darkMode
                 ? "border-gray-700 bg-gray-800"
                 : "border-gray-300 bg-gray-100"
             }`}
           >
+            
             <input
               value={newMessage}
               onChange={(e) => setNewMessage(e.target.value)}
@@ -241,6 +255,24 @@ const Chat = () => {
               }`}
               placeholder="Type a message..."
             />
+            {showEmojiPicker && (
+              <div className="absolute bottom-16 right-2 z-50">
+                <EmojiPicker
+                  theme={darkMode ? "dark" : "light"}
+                  onEmojiClick={handleEmojiClick}
+                />
+              </div>
+            )}
+
+            <button
+              onClick={() => setShowEmojiPicker((prev) => !prev)}
+              className="text-2xl"
+              title="Pick emoji"
+            >
+              😊
+            </button>
+
+
             <button
               onClick={sendMessage}
               className={`btn btn-secondary ${

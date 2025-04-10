@@ -180,7 +180,7 @@ const EditProfile = ({ user }) => {
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
-                    placeholder="e.g. React, Node.js"
+                    placeholder=""
                     className={`input input-bordered flex-1 ${
                       darkMode ? "bg-gray-800 text-white border-gray-600" : ""
                     }`}

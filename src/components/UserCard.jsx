@@ -2,7 +2,7 @@ import axios from "axios";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import React, { useEffect, useState } from "react";
 import { useDispatch } from "react-redux";
-import { useOutletContext } from "react-router-dom";
+import { useNavigate, useOutletContext } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
 import { BASE_URL } from "../utils/constants";
 import { removeUserFromFeed } from "../utils/feedSlice";
@@ -23,7 +23,7 @@ const UserCard = ({ user }) => {
   } = user;
 
   const dispatch = useDispatch();
-
+  const navigate=useNavigate();
   const allPhotos =
     Array.isArray(photos) && photos.length > 0 ? photos : [photoURL];
   const [currentIndex, setCurrentIndex] = useState(0);

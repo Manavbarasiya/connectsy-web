@@ -71,7 +71,7 @@ const Requests = () => {
         }`}
       >
         <img
-          src="https://cdn.pixabay.com/photo/2025/03/19/19/04/man-9481358_1280.jpg"
+          src="https://cdn.pixabay.com/animation/2024/03/05/02/16/02-16-28-55_512.gif"
           alt="No requests"
           className="w-64 h-64 mb-6"
         />

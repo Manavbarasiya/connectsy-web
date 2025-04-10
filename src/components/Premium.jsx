@@ -2,9 +2,12 @@ import axios from "axios";
 import React from "react";
 import { useOutletContext } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
+import { useSelector } from "react-redux";
 
 const Premium = () => {
   const { darkMode } = useOutletContext();
+  const user = useSelector((store) => store.user);
+  const isVerified = user?.isVerified;
 
   const handleBuyClick = async (type) => {
     try {
@@ -13,11 +16,12 @@ const Premium = () => {
         { membershipType: type },
         { withCredentials: true }
       );
+
       const { amount, currency, notes, keyId, orderId } = order.data;
       const options = {
         key: keyId,
-        amount: amount,
-        currency: currency,
+        amount,
+        currency,
         name: "Connectsy",
         description: "Connecting with users",
         order_id: orderId,
@@ -54,57 +58,68 @@ const Premium = () => {
       console.log("Error in handleBuyClick: " + err.message);
     }
   };
-  const plans = [
-    {
-      title: "Become a Verified user",
-      type: "silver",
-      duration: "3 Months",
-      price: "$9.99",
-      perks: ["Chat with other people", "100 requests per day", "Blue tick"],
-      style:
-        "bg-gray-100 text-gray-800 border border-gray-300 dark:bg-gray-800 dark:text-white dark:border-gray-600",
-    },
-    
-  ];
 
   return (
     <div
-      className={"min-h-screen py-10 px-4 flex flex-col items-center transition-all duration-300"}
+      className={`min-h-screen py-10 px-4 flex flex-col items-center transition-all duration-300 ${
+        darkMode ? "bg-gray-800 text-white" : " text-gray-900"
+      }`}
     >
       <h1
-        className={`text-3xl font-semibold mb-10 text-center ${
-          darkMode ? "text-white" : "text-black"
+        className={`text-3xl font-bold mb-10 text-center ${
+          darkMode ? "text-white" : "text-gray-800"
         }`}
       >
-        Become a Verified User
+        {isVerified ? "You're Verified ✨" : "Become a Verified User"}
       </h1>
 
-      <div
-        className={`rounded-2xl shadow-lg p-6 w-full max-w-md backdrop-blur-md bg-opacity-80 transition-transform transform hover:scale-105 ${
-          darkMode
-            ? "bg-gray-700 text-white border border-gray-600"
-            : "bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 text-gray-900 border border-purple-200"
-        }`}
-      >
-        <h2 className="text-2xl font-semibold mb-2">Verified Membership</h2>
-        <p className="text-sm font-medium mb-4">Lifetime Access</p>
-        <ul className="mb-4 space-y-2 list-disc list-inside text-base">
-          <li>Verified Blue Tick on your profile</li>
-          <li>Stand out in search results</li>
-          <li>Increased trust and visibility</li>
-        </ul>
-        <div className="text-xl font-bold mb-4">$9.99</div>
-        <div className="flex justify-center">
-          <button
-            onClick={() => handleBuyClick("silver")}
-            className={`cursor-pointer px-6 py-2 rounded-full text-white btn font-semibold ${
-              darkMode ? "btn-primary" : "btn-secondary"
-            }`}
-          >
-            Get Verified
-          </button>
+      {isVerified ? (
+        <div
+          className={`w-full max-w-md rounded-2xl px-6 py-8 shadow-xl text-center transition-all duration-300 ${
+            darkMode
+              ? "bg-gradient-to-br from-indigo-900 to-gray-800 border border-indigo-600"
+              : "bg-gradient-to-br from-indigo-100 to-purple-200 border border-purple-300"
+          }`}
+        >
+          <div className="text-4xl mb-4">✅</div>
+          <h2 className="text-2xl font-semibold mb-2">You're already verified!</h2>
+          <p className="text-base font-medium opacity-90 mb-4">
+            You’ve unlocked the blue tick, extra visibility, and premium status.
+          </p>
+          <p className="text-sm italic text-gray-400">
+            Keep shining, legend 😎
+          </p>
         </div>
-      </div>
+      ) : (
+        <div
+          className={`rounded-2xl shadow-lg p-6 w-full max-w-md backdrop-blur-md bg-opacity-80 transition-transform transform hover:scale-105 ${
+            darkMode
+              ? "bg-gray-700 text-white border border-gray-600"
+              : "bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 text-gray-900 border border-purple-200"
+          }`}
+        >
+          <h2 className="text-2xl font-semibold mb-2">Verified Membership</h2>
+          <p className="text-sm font-medium mb-4">Lifetime Access</p>
+          <ul className="mb-4 space-y-2 list-disc list-inside text-base">
+            <li>Verified Blue Tick on your profile</li>
+            <li>Stand out in search results</li>
+            <li>Increased trust and visibility</li>
+          </ul>
+          <div className="text-xl font-bold mb-4">$9.99</div>
+          <div className="flex justify-center">
+            <button
+              onClick={() => handleBuyClick("silver")}
+              className={`cursor-pointer px-6 py-2 rounded-full text-white font-semibold shadow-md ${
+                darkMode
+                  ? "bg-pink-600 hover:bg-pink-500"
+                  : "bg-purple-600 hover:bg-purple-500"
+              }`}
+            >
+              Get Verified
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };
