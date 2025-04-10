@@ -105,6 +105,7 @@ const SentRequests = () => {
           gender,
           about,
           photoURL,
+          isVerified,
           skills = [],
           _id,
         } = request.toUserId;
@@ -127,8 +128,18 @@ const SentRequests = () => {
                 className="w-20 cursor-pointer h-20 rounded-full object-cover border border-gray-300"
               />
               <div className="text-left mx-4">
-                <h2 className="font-bold text-xl">
+                <h2 className="font-bold text-xl flex items-center gap-1">
                   {firstName + " " + lastName}
+                  {isVerified && (
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="w-5 h-5 text-blue-500"
+                      viewBox="0 0 24 24"
+                      fill="currentColor"
+                    >
+                      <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
+                    </svg>
+                  )}
                 </h2>
                 {age && gender && (
                   <p className="text-gray-500">{age + ", " + gender}</p>

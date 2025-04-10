@@ -94,6 +94,7 @@ const Connections = () => {
           gender,
           about,
           photoURL,
+          isVerified,
           skills = [],
         } = connection;
         return (
@@ -113,12 +114,24 @@ const Connections = () => {
               className="w-20 h-20 rounded-full object-cover shadow-md cursor-pointer"
             />
             <div className="relative sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
-              <h2 className="font-bold text-xl">
+              <h2 className="font-bold text-xl flex items-center justify-center sm:justify-start gap-1">
                 {firstName + " " + lastName}
+                {isVerified && (
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    className="w-5 h-5 text-blue-500"
+                    viewBox="0 0 24 24"
+                    fill="currentColor"
+                  >
+                    <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
+                  </svg>
+                )}
               </h2>
+
               {age && gender && (
                 <p className="text-gray-500">{age + ", " + gender}</p>
               )}
+
               <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
                 {about?.split(" ").length > 15
                   ? `${about.split(" ").slice(0, 15).join(" ")}... `

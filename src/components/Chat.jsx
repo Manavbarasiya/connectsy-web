@@ -5,8 +5,6 @@ import { useNavigate, useOutletContext, useParams } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { createSocketConnection } from "../utils/socket";
 
-
-
 const Chat = () => {
   const { targetUserId } = useParams();
   const [messages, setMessages] = useState([]);
@@ -20,7 +18,6 @@ const Chat = () => {
   const bottomRef = useRef(null);
   const user = useSelector((store) => store.user);
   const userId = user?._id;
-  
 
   // Fetch initial chat history
   const fetchChatMessages = async () => {
@@ -35,7 +32,6 @@ const Chat = () => {
         return {
           firstName,
 
-    
           lastName,
           text,
           timestamp: new Date(createdAt).toLocaleTimeString([], {
@@ -155,8 +151,18 @@ const Chat = () => {
             onClick={() => navigate(`/user/${targetUser._id}`)}
           />
         )}
-        <h1 className="text-xl font-semibold">
+        <h1 className="text-xl font-semibold flex items-center gap-1">
           {targetUser?.firstName} {targetUser?.lastName}
+          {targetUser?.isVerified && (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 text-blue-500"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
+            </svg>
+          )}
         </h1>
       </div>
 
@@ -248,9 +254,7 @@ const Chat = () => {
           </div>
         </>
       )}
-      
     </div>
-    
   );
 };
 

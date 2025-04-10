@@ -15,5 +15,4 @@ const ThankYou = () => {
     </div>
   );
 };
-
 export default ThankYou;

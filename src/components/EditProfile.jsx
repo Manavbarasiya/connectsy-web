@@ -87,8 +87,8 @@ const EditProfile = ({ user }) => {
       return;
     }
 
-    if (photos.length > 5) {
-      setError("Max limit is 5 photos.");
+    if (photos.length > 6) {
+      setError("Max limit is 6 photos.");
       return;
     }
 
@@ -241,7 +241,7 @@ const EditProfile = ({ user }) => {
                   You can upload up to 5 photos. Click <strong>+</strong> to add more.
                 </p>
                 <div className="grid grid-cols-3 gap-3">
-                  {[...Array(5)].map((_, index) => {
+                  {[...Array(6)].map((_, index) => {
                     const imageURL = photos[index];
 
                     return (
@@ -256,10 +256,10 @@ const EditProfile = ({ user }) => {
                               alt={`Uploaded ${index}`}
                               className="w-full h-full object-cover rounded-lg"
                             />
-                            {(deletingPhotoURL === imageURL || uploading) && (
+                            {(deletingPhotoURL === imageURL) && (
                               <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center rounded-lg text-white text-sm">
                                 <span className="loading loading-spinner mb-1"></span>
-                                <span>Processing...</span>
+                                <span>Deleting...</span>
                               </div>
                             )}
                             <button
@@ -323,6 +323,7 @@ const EditProfile = ({ user }) => {
                 photoURL,
                 skills,
                 photos,
+                isVerified:user.isVerified,
               }}
             />
           </div>

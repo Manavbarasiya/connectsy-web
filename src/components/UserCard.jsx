@@ -1,11 +1,11 @@
-import React, { useState, useEffect } from "react";
-import { BASE_URL } from "../utils/constants";
-import { useDispatch } from "react-redux";
-import { removeUserFromFeed } from "../utils/feedSlice";
 import axios from "axios";
-import { useOutletContext } from "react-router-dom";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import React, { useEffect, useState } from "react";
+import { useDispatch } from "react-redux";
+import { useOutletContext } from "react-router-dom";
 import { useSwipeable } from "react-swipeable";
+import { BASE_URL } from "../utils/constants";
+import { removeUserFromFeed } from "../utils/feedSlice";
 
 const UserCard = ({ user }) => {
   const { darkMode } = useOutletContext();
@@ -18,16 +18,18 @@ const UserCard = ({ user }) => {
     gender,
     photoURL,
     photos,
+    isVerified,
     skills = [],
   } = user;
 
   const dispatch = useDispatch();
 
-  const allPhotos = Array.isArray(photos) && photos.length > 0 ? photos : [photoURL];
+  const allPhotos =
+    Array.isArray(photos) && photos.length > 0 ? photos : [photoURL];
   const [currentIndex, setCurrentIndex] = useState(0);
 
   useEffect(() => {
-    setCurrentIndex(0); // Reset index whenever the user changes
+    setCurrentIndex(0);
   }, [_id]);
 
   const handlePrev = () => {
@@ -108,7 +110,20 @@ const UserCard = ({ user }) => {
       )}
 
       <div className="card-body items-center text-center">
-        <h2 className="card-title">{firstName + " " + lastName}</h2>
+        <h2 className="card-title flex items-center gap-1">
+          {firstName + " " + lastName}
+          {isVerified &&  (
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              className="w-5 h-5 text-blue-500"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
+            </svg>
+          )}
+        </h2>
+
         {age && gender && <p className="text-sm">{age + ", " + gender}</p>}
         <p className="text-sm mt-1">{about}</p>
 
