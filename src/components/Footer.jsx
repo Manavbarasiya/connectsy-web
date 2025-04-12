@@ -5,24 +5,33 @@ export const Footer = ({ darkMode }) => {
   return (
     <footer
       className={`w-full mt-auto px-6 py-10 transition-colors duration-300
-        ${darkMode
-          ? "bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 border-t border-gray-700"
-          : "bg-gradient-to-r from-purple-100 to-pink-200 text-gray-800 border-t border-purple-300"
+        ${
+          darkMode
+            ? "bg-gradient-to-r from-gray-900 to-gray-800 text-gray-300 border-t border-gray-700"
+            : "bg-gradient-to-r from-purple-100 to-pink-200 text-gray-800 border-t border-purple-300"
         }`}
     >
-      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 items-start">
+      <div className="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-3 gap-8 items-start ">
         {/* Column 1: Logo and Name */}
-        <div className="flex items-center gap-4">
-          <img
-            src={logo}
-            alt="Connectsy Logo"
-            className="w-12 h-12 rounded-xl shadow-md"
-          />
-          <span className="text-2xl font-bold tracking-wide">Connectsy</span>
+        {/* Column 1: Logo, Name, and Description */}
+        <div className="flex flex-col gap-3">
+          <div className="flex items-center gap-4">
+            <img
+              src={logo}
+              alt="Connectsy Logo"
+              className="w-12 h-12 rounded-xl shadow-md"
+            />
+            <span className="text-2xl font-bold tracking-wide">Connectsy</span>
+          </div>
+          <p className="text-sm opacity-90 leading-relaxed">
+            Connectsy is a modern platform to discover, connect, and collaborate
+            with like-minded individuals. Whether you're here to make friends,
+            find teammates, or just network — we've got you covered.
+          </p>
         </div>
 
         {/* Column 2: Contact Info */}
-        <div className="text-sm space-y-2 leading-relaxed">
+        <div className="text-sm space-y-2 ml-40 leading-relaxed">
           <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
           <p>
             <span className="font-medium">Email:</span>{" "}
@@ -53,7 +62,9 @@ export const Footer = ({ darkMode }) => {
 
         {/* Column 3: Social Links */}
         <div>
-          <h3 className="text-lg font-semibold mb-3 sm:text-right">Follow Us On</h3>
+          <h3 className="text-lg font-semibold mb-3 sm:text-right">
+            Follow Us On
+          </h3>
           <div className="flex sm:justify-end gap-6">
             <a
               href="https://github.com/Manavbarasiya"

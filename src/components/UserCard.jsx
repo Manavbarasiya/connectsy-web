@@ -23,7 +23,13 @@ const UserCard = ({ user }) => {
   } = user;
 
   const dispatch = useDispatch();
-  const navigate=useNavigate();
+  const navigate = useNavigate();
+
+  const getShortAbout = (text, wordLimit = 15) => {
+    const words = text?.split(" ");
+    if (!words || words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(" ") + "...";
+  };
   const allPhotos =
     Array.isArray(photos) && photos.length > 0 ? photos : [photoURL];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -112,7 +118,7 @@ const UserCard = ({ user }) => {
       <div className="card-body items-center text-center">
         <h2 className="card-title flex items-center gap-1">
           {firstName + " " + lastName}
-          {isVerified &&  (
+          {isVerified && (
             <svg
               xmlns="http://www.w3.org/2000/svg"
               className="w-5 h-5 text-blue-500"
@@ -125,7 +131,21 @@ const UserCard = ({ user }) => {
         </h2>
 
         {age && gender && <p className="text-sm">{age + ", " + gender}</p>}
-        <p className="text-sm mt-1">{about}</p>
+        <div className="text-sm mt-1">
+          <p>
+            {getShortAbout(about)}
+            {about?.split(" ").length > 20 && (
+              <button
+                className={`ml-2 text-blue-500 underline hover:text-blue-700 transition-colors ${
+                  darkMode ? "text-blue-300 hover:text-blue-100" : ""
+                }`}
+                onClick={() => navigate(`/user/${_id}`)}
+              >
+                Know more
+              </button>
+            )}
+          </p>
+        </div>
 
         {skills.length > 0 && (
           <div className="mt-3 w-full">
