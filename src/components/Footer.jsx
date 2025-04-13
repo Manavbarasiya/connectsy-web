@@ -29,7 +29,7 @@ export const Footer = ({ darkMode }) => {
             find teammates, or just network — we've got you covered.
           </p>
         </div>
-
+        
         {/* Column 2: Contact Info */}
         <div className="text-sm space-y-2 ml-40 leading-relaxed">
           <h3 className="text-lg font-semibold mb-2">Contact Us</h3>
