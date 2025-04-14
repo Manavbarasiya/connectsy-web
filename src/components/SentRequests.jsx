@@ -114,7 +114,7 @@ const SentRequests = () => {
           <div
             key={_id}
             className={`flex flex-col md:flex-row items-center justify-between m-4 p-4 rounded-lg w-full md:w-2/3 mx-auto shadow-lg transition-colors duration-300 ${
-              darkMode ? "bg-slate-700 text-white" : "bg-gray-100 text-black"
+              darkMode ? "bg-slate-700 text-white" : "bg-base-300 text-black"
             }`}
           >
             {/* Profile Section */}

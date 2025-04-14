@@ -4,6 +4,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
 import { addRequests, removeRequest } from "../utils/requestSlice";
+// ...imports remain unchanged
 
 const Requests = () => {
   const dispatch = useDispatch();
@@ -94,12 +95,13 @@ const Requests = () => {
 
   return (
     <div
-      className={`text-center my-10 px-4 transition-colors duration-300 ${
+      className={`text-center my-10 px-4 sm:px-6 md:px-12 transition-colors duration-300 ${
         darkMode ? "bg-gray-800 text-white" : "text-black"
       }`}
     >
-      <h1 className={`font-bold text-2xl mb-6`}>Connection Requests</h1>
-      <div className="flex flex-col gap-6">
+      <h1 className="font-bold text-2xl mb-8">Connection Requests</h1>
+
+      <div className="flex flex-col gap-8 items-center">
         {requests.map((request) => {
           const {
             firstName,
@@ -116,12 +118,12 @@ const Requests = () => {
           return (
             <div
               key={_id}
-              className={`flex flex-col md:flex-row items-center justify-between p-4 rounded-lg shadow-lg gap-4 md:gap-6 transition-colors duration-300 ${
-                darkMode ? "bg-slate-700 text-white" : "bg-gray-100 text-black"
+              className={`flex flex-col sm:flex-row items-center sm:items-start p-4 sm:p-6 rounded-2xl w-full sm:w-[90%] max-w-4xl shadow-md transition-colors duration-300 ${
+                darkMode ? "bg-slate-700 text-white" : "bg-base-300 text-black"
               }`}
             >
               {/* Profile Section */}
-              <div className="flex flex-col sm:flex-row items-center sm:items-start w-full md:w-3/4 gap-4">
+              <div className="flex flex-col sm:flex-row items-center sm:items-start w-full gap-4">
                 <img
                   src={photoURL || "https://via.placeholder.com/100"}
                   alt="profile"
@@ -131,21 +133,22 @@ const Requests = () => {
                   }}
                   className="w-20 h-20 rounded-full object-cover border border-gray-300 cursor-pointer"
                 />
-                <div className="space-y-1 text-center sm:text-left flex flex-col items-center sm:items-start w-full">
-
-                  <h2 className="font-bold text-xl flex items-center gap-1">
+                <div className="space-y-1 text-center sm:text-left w-full">
+                  <h2 className="font-bold text-xl flex items-center justify-center sm:justify-start gap-1">
                     {firstName + " " + lastName}
                     {isVerified && (
                       <img
-                      src="verify.png"
-                      alt="Verified Badge"
-                      className="w-5 h-5 object-contain -ml-0.5 -mb-1"
-                    />
+                        src="verify.png"
+                        alt="Verified Badge"
+                        className="w-5 h-5 object-contain -ml-0.5 -mb-1"
+                      />
                     )}
                   </h2>
 
                   {age && gender && (
-                    <p className="text-gray-500 text-sm">{age + ", " + gender}</p>
+                    <p className="text-gray-500 text-sm">
+                      {age + ", " + gender}
+                    </p>
                   )}
 
                   <p
@@ -170,7 +173,7 @@ const Requests = () => {
                   </p>
 
                   {skills.length > 0 && (
-                    <div className="flex flex-wrap gap-2 mt-2">
+                    <div className="flex flex-wrap gap-2 mt-2 justify-center sm:justify-start">
                       {skills.map((skill, index) => (
                         <span
                           key={index}
@@ -189,9 +192,9 @@ const Requests = () => {
               </div>
 
               {/* Buttons */}
-              <div className="flex gap-3 w-full md:w-auto justify-center md:justify-end">
+              <div className="flex gap-3 mt-4 sm:mt-0 w-full sm:w-auto justify-center sm:justify-end">
                 <button
-                  className={`px-4 py-2 btn w-24 ${
+                  className={`px-4 mt-7 py-2 btn w-24 ${
                     darkMode ? "btn-success" : "btn-primary"
                   }`}
                   onClick={() => requestReceived("accepted", request._id)}
@@ -199,7 +202,7 @@ const Requests = () => {
                   Accept
                 </button>
                 <button
-                  className={`px-4 py-2 btn w-24 ${
+                  className={`px-4  mt-7 py-2 btn w-24 ${
                     darkMode ? "btn-info" : "btn-secondary"
                   }`}
                   onClick={() => requestReceived("rejected", request._id)}
