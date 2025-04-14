@@ -120,14 +120,11 @@ const UserProfile = () => {
         <h2 className="text-2xl flex -my-0.5  mx-4 font-semibold justify-center items-center gap-1">
           <h2 className="">{user.firstName} {user.lastName}</h2>
           {user.isVerified && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-blue-500"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
-            </svg>
+            <img
+            src="/verify.png"
+            alt="Verified Badge"
+            className="w-5 h-5 object-contain -ml-0.5 -mb-2"
+          />
           )}
         </h2>
 

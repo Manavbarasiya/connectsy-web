@@ -1,6 +1,6 @@
 import axios from "axios";
 import { X } from "lucide-react";
-import React, { useState } from "react";
+import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
@@ -26,6 +26,11 @@ const EditProfile = ({ user }) => {
 
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const cardRef = useRef(null);
+
+  const scrollToPreview = () => {
+    cardRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
 
   const addSkill = () => {
     const trimmedSkill = newSkill.trim();
@@ -119,7 +124,17 @@ const EditProfile = ({ user }) => {
   };
 
   return (
-    <div className="flex justify-center relative">
+    <div className="flex justify-center relative flex-col items-center">
+      {/* Preview button only on small screens */}
+      <div className="w-full flex justify-center mt-4 md:hidden">
+        <button
+          onClick={scrollToPreview}
+          className="btn btn-outline btn-accent text-sm"
+        >
+          Preview Profile
+        </button>
+      </div>
+
       {/* Blur overlay on UserCard when uploading */}
       {uploading && (
         <div className="absolute inset-0 z-10 bg-black/40 flex items-center justify-center backdrop-blur-sm rounded-lg">
@@ -130,9 +145,9 @@ const EditProfile = ({ user }) => {
         </div>
       )}
 
-      <div className="flex justify-center space-x-10 my-10 mx-10 flex-wrap md:flex-nowrap">
+      <div className="flex flex-col md:flex-row justify-center md:space-x-10 my-10 mx-4 md:mx-10 gap-10 md:gap-0">
         <div
-          className={`flex-1 card w-[450px] shadow-lg border transition-colors duration-500 ${
+          className={`w-full md:w-[450px] card shadow-lg border transition-colors duration-500 ${
             darkMode
               ? "bg-slate-700 border-gray-600 text-white"
               : "bg-pink-100 text-black"
@@ -141,10 +156,19 @@ const EditProfile = ({ user }) => {
           <div className="card-body">
             <h2 className="card-title flex justify-center">Edit Profile</h2>
             <div>
-              {[{ label: "First Name", value: firstName, onChange: setFirstName },
+              {[
+                {
+                  label: "First Name",
+                  value: firstName,
+                  onChange: setFirstName,
+                },
                 { label: "Last Name", value: lastName, onChange: setLastName },
-                { label: "Profile URL", value: photoURL, onChange: setPhotoURL },
-                { label: "Age", value: age, onChange: setAge, type: "number" }
+                {
+                  label: "Profile URL",
+                  value: photoURL,
+                  onChange: setPhotoURL,
+                },
+                { label: "Age", value: age, onChange: setAge, type: "number" },
               ].map(({ label, value, onChange, type = "text" }) => (
                 <fieldset className="mb-3" key={label}>
                   <legend className="text-sm font-medium mb-1">{label}</legend>
@@ -238,7 +262,8 @@ const EditProfile = ({ user }) => {
                   Profile Photos
                 </legend>
                 <p className="text-xs text-gray-500 mb-2">
-                  You can upload up to 5 photos. Click <strong>+</strong> to add more.
+                  You can upload up to 5 photos. Click <strong>+</strong> to add
+                  more.
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   {[...Array(6)].map((_, index) => {
@@ -256,7 +281,7 @@ const EditProfile = ({ user }) => {
                               alt={`Uploaded ${index}`}
                               className="w-full h-full object-cover rounded-lg"
                             />
-                            {(deletingPhotoURL === imageURL) && (
+                            {deletingPhotoURL === imageURL && (
                               <div className="absolute inset-0 bg-black/50 flex flex-col items-center justify-center rounded-lg text-white text-sm">
                                 <span className="loading loading-spinner mb-1"></span>
                                 <span>Deleting...</span>
@@ -266,7 +291,9 @@ const EditProfile = ({ user }) => {
                               className="absolute top-1 right-1 bg-white/80 hover:bg-red-500 text-black hover:text-white p-1 rounded-full transition-opacity"
                               onClick={() => handleDeletePhoto(imageURL)}
                               title="Delete Photo"
-                              disabled={deletingPhotoURL === imageURL || uploading}
+                              disabled={
+                                deletingPhotoURL === imageURL || uploading
+                              }
                             >
                               <X size={14} />
                             </button>
@@ -311,7 +338,8 @@ const EditProfile = ({ user }) => {
           </div>
         </div>
 
-        <div className="flex-1 relative">
+        {/* UserCard Preview */}
+        <div className="flex-1 relative mt-6 md:mt-0" ref={cardRef}>
           <div className={`${uploading ? "blur-sm pointer-events-none" : ""}`}>
             <UserCard
               user={{
@@ -323,7 +351,7 @@ const EditProfile = ({ user }) => {
                 photoURL,
                 skills,
                 photos,
-                isVerified:user.isVerified,
+                isVerified: user.isVerified,
               }}
             />
           </div>

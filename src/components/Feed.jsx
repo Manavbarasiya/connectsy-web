@@ -4,7 +4,7 @@ import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
 import { addFeed } from "../utils/feedSlice";
 import UserCard from "./UserCard";
-import { useOutletContext, Link } from "react-router-dom";
+import { useOutletContext } from "react-router-dom";
 
 const Feed = () => {
   const { darkMode } = useOutletContext();
@@ -74,7 +74,7 @@ const Feed = () => {
   }
 
   return (
-    <div className="flex justify-center py-4 mt-5">
+    <div className="flex justify-center items-center px-4 sm:px-0 py-4 mt-5">
       <UserCard user={feed[0]} />
     </div>
   );

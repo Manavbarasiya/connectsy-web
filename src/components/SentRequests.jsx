@@ -113,11 +113,12 @@ const SentRequests = () => {
         return (
           <div
             key={_id}
-            className={`flex items-center justify-between m-4 p-4 rounded-lg w-2/3 mx-auto shadow-lg transition-colors duration-300 ${
+            className={`flex flex-col md:flex-row items-center justify-between m-4 p-4 rounded-lg w-full md:w-2/3 mx-auto shadow-lg transition-colors duration-300 ${
               darkMode ? "bg-slate-700 text-white" : "bg-gray-100 text-black"
             }`}
           >
-            <div className="flex items-center ">
+            {/* Profile Section */}
+            <div className="flex flex-col sm:flex-row items-center text-center sm:text-left sm:items-start w-full md:w-3/4 gap-4">
               <img
                 src={photoURL || "https://via.placeholder.com/100"}
                 alt="profile"
@@ -125,27 +126,26 @@ const SentRequests = () => {
                   navigate("/user/" + _id);
                   window.scrollTo(0, 0);
                 }}
-                className="w-20 cursor-pointer h-20 rounded-full object-cover border border-gray-300"
+                className="w-20 h-20 rounded-full object-cover border border-gray-300 cursor-pointer"
               />
-              <div className="text-left mx-4">
-                <h2 className="font-bold text-xl flex items-center gap-1">
+              <div className="space-y-1">
+                <h2 className="font-bold text-xl flex items-center justify-center sm:justify-start gap-1">
                   {firstName + " " + lastName}
                   {isVerified && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-blue-500"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
-                    </svg>
+                    <img
+                    src="verify.png"
+                    alt="Verified Badge"
+                    className="w-5 h-5 object-contain -ml-0.5 -mb-1"
+                  />
                   )}
                 </h2>
                 {age && gender && (
-                  <p className="text-gray-500">{age + ", " + gender}</p>
+                  <p className="text-gray-500 text-sm">{age + ", " + gender}</p>
                 )}
                 <p
-                  className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                  className={`text-sm ${
+                    darkMode ? "text-gray-300" : "text-gray-700"
+                  }`}
                 >
                   {about?.split(" ").length > 15
                     ? `${about.split(" ").slice(0, 15).join(" ")}... `
@@ -162,13 +162,12 @@ const SentRequests = () => {
                     </span>
                   )}
                 </p>
-
                 {skills.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
+                  <div className="flex flex-wrap gap-2 mt-2 justify-center sm:justify-start">
                     {skills.map((skill, index) => (
                       <span
                         key={index}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                        className={`px-3 py-1 rounded-full text-xs font-medium ${
                           darkMode
                             ? "bg-blue-600 text-white"
                             : "bg-white text-blue-600 border border-blue-300"
@@ -182,7 +181,8 @@ const SentRequests = () => {
               </div>
             </div>
 
-            <div className="flex flex-col gap-2 items-end">
+            {/* Button Section */}
+            <div className="flex justify-center md:justify-end mt-4 md:mt-0 w-full md:w-auto">
               <button
                 className={`px-4 py-2 text-sm rounded-md shadow transition hover:scale-105 ${
                   darkMode ? "btn btn-primary" : "btn btn-secondary"

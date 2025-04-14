@@ -139,7 +139,7 @@ const Chat = () => {
 
   return (
     <div
-      className={`w-3/4 mx-auto m-5 h-[70vh] flex flex-col rounded-lg overflow-hidden shadow-md ${
+      className={`w-full max-w-5xl mx-auto my-4 h-[80vh] flex flex-col rounded-lg overflow-hidden shadow-md transition-all duration-300 ${
         darkMode
           ? "bg-gray-900 border border-gray-700"
           : "bg-white/70 backdrop-blur-md border border-white/30"
@@ -147,7 +147,7 @@ const Chat = () => {
     >
       {/* Header */}
       <div
-        className={`p-5 border-b flex items-center gap-3 ${
+        className={`p-4 sm:p-5 border-b flex items-center gap-3 ${
           darkMode
             ? "border-gray-700 bg-gray-800 text-white"
             : "border-gray-300 bg-gray-100 text-gray-900"
@@ -157,21 +157,18 @@ const Chat = () => {
           <img
             src={targetUser.photoURL}
             alt="Profile"
-            className="w-10 h-10 rounded-full object-cover"
+            className="w-10 h-10 rounded-full object-cover cursor-pointer"
             onClick={() => navigate(`/user/${targetUser._id}`)}
           />
         )}
-        <h1 className="text-xl font-semibold flex items-center gap-1">
+        <h1 className="text-lg sm:text-xl font-semibold flex items-center gap-1">
           {targetUser?.firstName} {targetUser?.lastName}
           {targetUser?.isVerified && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-blue-500"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
-            </svg>
+            <img
+            src="/verify.png"
+            alt="Verified Badge"
+            className="w-5 h-5 object-contain -ml-0.5 -mb-0.5"
+          />
           )}
         </h1>
       </div>
@@ -190,7 +187,7 @@ const Chat = () => {
           {/* Chat messages */}
           <div
             ref={chatContainerRef}
-            className="flex-1 overflow-y-auto p-5 space-y-3 no-scrollbar"
+            className="flex-1 overflow-y-auto p-3 sm:p-5 space-y-3 no-scrollbar"
           >
             {messages.length === 0 ? (
               <div
@@ -198,12 +195,10 @@ const Chat = () => {
                   darkMode ? "text-gray-400" : "text-gray-500"
                 }`}
               >
-                <div className="text-2xl font-semibold mb-2">
+                <div className="text-xl sm:text-2xl font-semibold mb-2">
                   No conversation yet
                 </div>
-                <p className="text-sm">
-                  Say hello to start the conversation ✨
-                </p>
+                <p className="text-sm">Say hello to start the conversation ✨</p>
               </div>
             ) : (
               messages.map((msg, index) => (
@@ -237,49 +232,49 @@ const Chat = () => {
 
           {/* Input area */}
           <div
-            className={`relative p-5 border-t flex items-center gap-2 ${
+            className={`relative p-3 sm:p-4 border-t flex flex-col sm:flex-row items-center gap-3 sm:gap-2 ${
               darkMode
                 ? "border-gray-700 bg-gray-800"
                 : "border-gray-300 bg-gray-100"
             }`}
           >
-            
-            <input
-              value={newMessage}
-              onChange={(e) => setNewMessage(e.target.value)}
-              onKeyDown={handleKeyPress}
-              className={`flex-1 border rounded p-2 outline-none ${
-                darkMode
-                  ? "bg-gray-700 text-white placeholder-gray-400 border-gray-600"
-                  : "bg-white text-black placeholder-gray-500 border-gray-400"
-              }`}
-              placeholder="Type a message..."
-            />
-            {showEmojiPicker && (
-              <div className="absolute bottom-16 right-2 z-50">
-                <EmojiPicker
-                  theme={darkMode ? "dark" : "light"}
-                  onEmojiClick={handleEmojiClick}
-                />
-              </div>
-            )}
+            <div className="relative w-full flex items-center gap-2">
+              <input
+                value={newMessage}
+                onChange={(e) => setNewMessage(e.target.value)}
+                onKeyDown={handleKeyPress}
+                className={`w-full border rounded px-3 py-2 outline-none text-sm sm:text-base ${
+                  darkMode
+                    ? "bg-gray-700 text-white placeholder-gray-400 border-gray-600"
+                    : "bg-white text-black placeholder-gray-500 border-gray-400"
+                }`}
+                placeholder="Type a message..."
+              />
+              <button
+                onClick={() => setShowEmojiPicker((prev) => !prev)}
+                className="text-xl sm:text-2xl"
+                title="Pick emoji"
+              >
+                😊
+              </button>
 
-            <button
-              onClick={() => setShowEmojiPicker((prev) => !prev)}
-              className="text-2xl"
-              title="Pick emoji"
-            >
-              😊
-            </button>
-
+              {showEmojiPicker && (
+                <div className="absolute bottom-14 right-0 sm:bottom-12 z-50">
+                  <EmojiPicker
+                    theme={darkMode ? "dark" : "light"}
+                    onEmojiClick={handleEmojiClick}
+                  />
+                </div>
+              )}
+            </div>
 
             <button
               onClick={sendMessage}
-              className={`btn btn-secondary ${
+              className={`w-full sm:w-auto btn text-sm sm:text-base ${
                 darkMode
                   ? "bg-blue-600 hover:bg-blue-700 text-white"
                   : "bg-blue-500 hover:bg-blue-600 text-white"
-              }`}
+              } px-5 py-2 rounded-full transition-transform duration-200 hover:scale-105`}
             >
               Send
             </button>

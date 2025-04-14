@@ -36,7 +36,8 @@ const Premium = () => {
               },
               { withCredentials: true }
             );
-            alert("Payment successful! 🎉");
+            alert("Payment successful!! Please refresh the page");
+            window.location.reload();
           } catch (error) {
             console.error("Verification failed", error);
             alert("Payment verification failed");
@@ -62,11 +63,11 @@ const Premium = () => {
   return (
     <div
       className={`min-h-screen py-10 px-4 flex flex-col items-center transition-all duration-300 ${
-        darkMode ? "bg-gray-800 text-white" : " text-gray-900"
+        darkMode ? "bg-gray-800 text-white" : "text-gray-900"
       }`}
     >
       <h1
-        className={`text-3xl font-bold mb-10 text-center ${
+        className={`text-3xl font-bold mb-8 text-center leading-snug px-4 ${
           darkMode ? "text-white" : "text-gray-800"
         }`}
       >
@@ -75,14 +76,16 @@ const Premium = () => {
 
       {isVerified ? (
         <div
-          className={`w-full max-w-md rounded-2xl px-6 py-8 shadow-xl text-center transition-all duration-300 ${
+          className={`w-full max-w-[90%] sm:max-w-md rounded-2xl px-6 py-8 shadow-xl text-center transition-all duration-300 ${
             darkMode
               ? "bg-gradient-to-br from-indigo-900 to-gray-800 border border-indigo-600"
               : "bg-gradient-to-br from-indigo-100 to-purple-200 border border-purple-300"
           }`}
         >
           <div className="text-4xl mb-4">✅</div>
-          <h2 className="text-2xl font-semibold mb-2">You're already verified!</h2>
+          <h2 className="text-2xl font-semibold mb-2">
+            You're already verified!
+          </h2>
           <p className="text-base font-medium opacity-90 mb-4">
             You’ve unlocked the blue tick, extra visibility, and premium status.
           </p>
@@ -92,24 +95,28 @@ const Premium = () => {
         </div>
       ) : (
         <div
-          className={`rounded-2xl shadow-lg p-6 w-full max-w-md backdrop-blur-md bg-opacity-80 transition-transform transform hover:scale-105 ${
+          className={`w-full max-w-[90%] sm:max-w-md rounded-2xl shadow-lg p-6 backdrop-blur-md bg-opacity-80 transition-transform transform hover:scale-105 ${
             darkMode
               ? "bg-gray-700 text-white border border-gray-600"
               : "bg-gradient-to-br from-indigo-100 via-purple-100 to-pink-100 text-gray-900 border border-purple-200"
           }`}
         >
-          <h2 className="text-2xl font-semibold mb-2">Verified Membership</h2>
-          <p className="text-sm font-medium mb-4">Lifetime Access</p>
+          <h2 className="text-2xl font-semibold mb-2 text-center">
+            Verified Membership
+          </h2>
+          <p className="text-sm font-medium mb-4 text-center">
+            Lifetime Access
+          </p>
           <ul className="mb-4 space-y-2 list-disc list-inside text-base">
             <li>Verified Blue Tick on your profile</li>
             <li>Stand out in search results</li>
             <li>Increased trust and visibility</li>
           </ul>
-          <div className="text-xl font-bold mb-4">$9.99</div>
+          <div className="text-xl font-bold mb-4 text-center">$9.99</div>
           <div className="flex justify-center">
             <button
               onClick={() => handleBuyClick("silver")}
-              className={`cursor-pointer px-6 py-2 rounded-full text-white font-semibold shadow-md ${
+              className={`w-full sm:w-auto px-6 py-2 rounded-full text-white font-semibold shadow-md text-center ${
                 darkMode
                   ? "bg-pink-600 hover:bg-pink-500"
                   : "bg-purple-600 hover:bg-purple-500"

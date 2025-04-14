@@ -3,8 +3,7 @@ import { BASE_URL } from "../utils/constants";
 import axios from "axios";
 import { useDispatch, useSelector } from "react-redux";
 import { addConnections } from "../utils/connectionSlice";
-import { Link, useNavigate } from "react-router-dom";
-import { useOutletContext } from "react-router-dom";
+import { Link, useNavigate, useOutletContext } from "react-router-dom";
 
 const Connections = () => {
   const dispatch = useDispatch();
@@ -81,104 +80,103 @@ const Connections = () => {
   }
 
   return (
-    <div className={`text-center my-10 transition-colors duration-300`}>
+    <div className={`text-center my-10 px-4 transition-colors duration-300`}>
       <h1 className={`font-bold text-2xl mb-6 ${darkMode ? "text-white" : ""}`}>
         Connections
       </h1>
-      {connections.map((connection) => {
-        const {
-          _id,
-          firstName,
-          lastName,
-          age,
-          gender,
-          about,
-          photoURL,
-          isVerified,
-          skills = [],
-        } = connection;
-        return (
-          <div
-            key={_id}
-            className={`flex flex-col sm:flex-row items-center m-4 p-4 rounded-lg w-full sm:w-1/2 mx-auto shadow-md transition-colors duration-300 ${
-              darkMode ? "bg-slate-700 text-white" : "bg-base-300 text-black"
-            }`}
-          >
-            <img
-              src={photoURL}
-              onClick={() => {
-                navigate("/user/" + _id);
-                window.scrollTo(0, 0);
-              }}
-              alt="photo"
-              className="w-20 h-20 rounded-full object-cover shadow-md cursor-pointer"
-            />
-            <div className="relative sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
-              <h2 className="font-bold text-xl flex items-center justify-center sm:justify-start gap-1">
-                {firstName + " " + lastName}
-                {isVerified && (
-                  <svg
-                    xmlns="http://www.w3.org/2000/svg"
-                    className="w-5 h-5 text-blue-500"
-                    viewBox="0 0 24 24"
-                    fill="currentColor"
-                  >
-                    <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
-                  </svg>
+      <div className="flex flex-col gap-6 items-center">
+        {connections.map((connection) => {
+          const {
+            _id,
+            firstName,
+            lastName,
+            age,
+            gender,
+            about,
+            photoURL,
+            isVerified,
+            skills = [],
+          } = connection;
+          return (
+            <div
+              key={_id}
+              className={`flex flex-col sm:flex-row items-center sm:items-start p-4 rounded-lg w-full sm:w-[80%] max-w-4xl shadow-md transition-colors duration-300 ${
+                darkMode ? "bg-slate-700 text-white" : "bg-base-300 text-black"
+              }`}
+            >
+              <img
+                src={photoURL}
+                onClick={() => {
+                  navigate("/user/" + _id);
+                  window.scrollTo(0, 0);
+                }}
+                alt="photo"
+                className="w-24 h-24 rounded-full object-cover shadow-md cursor-pointer"
+              />
+              <div className="relative sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
+                <h2 className="font-bold text-xl flex items-center justify-center sm:justify-start gap-1">
+                  {firstName + " " + lastName}
+                  {isVerified && (
+                    <img
+                    src="verify.png"
+                    alt="Verified Badge"
+                    className="w-5 h-5 object-contain -ml-0.5 -mb-1"
+                  />
+                  )}
+                </h2>
+
+                {age && gender && (
+                  <p className="text-gray-500">{age + ", " + gender}</p>
                 )}
-              </h2>
 
-              {age && gender && (
-                <p className="text-gray-500">{age + ", " + gender}</p>
-              )}
-
-              <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
-                {about?.split(" ").length > 15
-                  ? `${about.split(" ").slice(0, 15).join(" ")}... `
-                  : about}
-                {about?.split(" ").length > 15 && (
-                  <span
-                    className="text-blue-500 cursor-pointer hover:underline ml-1"
-                    onClick={() => {
-                      navigate("/user/" + _id);
-                      window.scrollTo({ top: 0, behavior: "smooth" });
-                    }}
-                  >
-                    know more
-                  </span>
-                )}
-              </p>
-
-              {skills.length > 0 && (
-                <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
-                  {skills.map((skill, index) => (
+                <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                  {about?.split(" ").length > 15
+                    ? `${about.split(" ").slice(0, 15).join(" ")}... `
+                    : about}
+                  {about?.split(" ").length > 15 && (
                     <span
-                      key={index}
-                      className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                        darkMode
-                          ? "bg-blue-600 text-white"
-                          : "bg-white text-blue-600 border border-blue-300"
-                      }`}
+                      className="text-blue-500 cursor-pointer hover:underline ml-1"
+                      onClick={() => {
+                        navigate("/user/" + _id);
+                        window.scrollTo({ top: 0, behavior: "smooth" });
+                      }}
                     >
-                      {skill}
+                      know more
                     </span>
-                  ))}
-                </div>
-              )}
+                  )}
+                </p>
 
-              {/* Chat Button on the side */}
-              <button
-                onClick={() => navigate(`/chat/${_id}`)}
-                className={`sm:absolute sm:right-4 btn sm:top-4 mt-3 sm:mt-0 ${
-                  darkMode ? "btn-primary" : "btn-secondary"
-                } text-white px-4 py-2 rounded-full transition-transform duration-200 hover:scale-105`}
-              >
-                💬 Chat
-              </button>
+                {skills.length > 0 && (
+                  <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
+                    {skills.map((skill, index) => (
+                      <span
+                        key={index}
+                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                          darkMode
+                            ? "bg-blue-600 text-white"
+                            : "bg-white text-blue-600 border border-blue-300"
+                        }`}
+                      >
+                        {skill}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                {/* Chat Button */}
+                <button
+                  onClick={() => navigate(`/chat/${_id}`)}
+                  className={`sm:absolute sm:right-4 btn sm:top-4 mt-3 sm:mt-0 ${
+                    darkMode ? "btn-primary" : "btn-secondary"
+                  } text-white px-4 py-2 rounded-full transition-transform duration-200 hover:scale-105`}
+                >
+                  💬 Chat
+                </button>
+              </div>
             </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

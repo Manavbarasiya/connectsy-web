@@ -42,7 +42,6 @@ const Requests = () => {
     }
   };
 
-  // Show loader while fetching requests
   if (isLoading) {
     return (
       <div
@@ -62,7 +61,6 @@ const Requests = () => {
     );
   }
 
-  // Show message if no requests
   if (!requests || requests.length === 0) {
     return (
       <div
@@ -94,124 +92,125 @@ const Requests = () => {
     );
   }
 
-  // Show all requests
   return (
     <div
-      className={`text-center my-10 transition-colors duration-300 ${
+      className={`text-center my-10 px-4 transition-colors duration-300 ${
         darkMode ? "bg-gray-800 text-white" : "text-black"
       }`}
     >
-      <h1 className={`font-bold text-2xl mb-6 ${darkMode ? "text-white" : ""}`}>
-        Connection Requests
-      </h1>
-      {requests.map((request) => {
-        const {
-          firstName,
-          lastName,
-          age,
-          gender,
-          about,
-          photoURL,
-          skills = [],
-          _id,
-          isVerified,
-        } = request.fromUserId;
+      <h1 className={`font-bold text-2xl mb-6`}>Connection Requests</h1>
+      <div className="flex flex-col gap-6">
+        {requests.map((request) => {
+          const {
+            firstName,
+            lastName,
+            age,
+            gender,
+            about,
+            photoURL,
+            skills = [],
+            _id,
+            isVerified,
+          } = request.fromUserId;
 
-        return (
-          <div
-            key={_id}
-            className={`flex items-center justify-between m-4 p-4 rounded-lg w-2/3 mx-auto shadow-lg transition-colors duration-300 ${
-              darkMode ? "bg-slate-700 text-white" : "bg-gray-100 text-black"
-            }`}
-          >
-            <div className="flex items-center ">
-              <img
-                src={photoURL || "https://via.placeholder.com/100"}
-                alt="profile"
-                onClick={() => {
-                  navigate("/user/" + _id);
-                  window.scrollTo(0, 0);
-                }}
-                className="w-20 cursor-pointer h-20 rounded-full object-cover border border-gray-300"
-              />
-              <div className="text-left mx-4">
-                <h2 className="font-bold text-xl flex items-center gap-1">
-                  {firstName + " " + lastName}
-                  {isVerified && (
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      className="w-5 h-5 text-blue-500"
-                      viewBox="0 0 24 24"
-                      fill="currentColor"
-                    >
-                      <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
-                    </svg>
+          return (
+            <div
+              key={_id}
+              className={`flex flex-col md:flex-row items-center justify-between p-4 rounded-lg shadow-lg gap-4 md:gap-6 transition-colors duration-300 ${
+                darkMode ? "bg-slate-700 text-white" : "bg-gray-100 text-black"
+              }`}
+            >
+              {/* Profile Section */}
+              <div className="flex flex-col sm:flex-row items-center sm:items-start w-full md:w-3/4 gap-4">
+                <img
+                  src={photoURL || "https://via.placeholder.com/100"}
+                  alt="profile"
+                  onClick={() => {
+                    navigate("/user/" + _id);
+                    window.scrollTo(0, 0);
+                  }}
+                  className="w-20 h-20 rounded-full object-cover border border-gray-300 cursor-pointer"
+                />
+                <div className="space-y-1 text-center sm:text-left flex flex-col items-center sm:items-start w-full">
+
+                  <h2 className="font-bold text-xl flex items-center gap-1">
+                    {firstName + " " + lastName}
+                    {isVerified && (
+                      <img
+                      src="verify.png"
+                      alt="Verified Badge"
+                      className="w-5 h-5 object-contain -ml-0.5 -mb-1"
+                    />
+                    )}
+                  </h2>
+
+                  {age && gender && (
+                    <p className="text-gray-500 text-sm">{age + ", " + gender}</p>
                   )}
-                </h2>
 
-                {age && gender && (
-                  <p className="text-gray-500">{age + ", " + gender}</p>
-                )}
-
-                <p
-                  className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}
-                >
-                  {about?.split(" ").length > 15
-                    ? `${about.split(" ").slice(0, 15).join(" ")}... `
-                    : about}
-                  {about?.split(" ").length > 15 && (
-                    <span
-                      className="text-blue-500 cursor-pointer hover:underline ml-1"
-                      onClick={() => {
-                        navigate("/user/" + _id);
-                        window.scrollTo({ top: 0, behavior: "smooth" });
-                      }}
-                    >
-                      know more
-                    </span>
-                  )}
-                </p>
-
-                {skills.length > 0 && (
-                  <div className="flex flex-wrap gap-2 mt-2">
-                    {skills.map((skill, index) => (
+                  <p
+                    className={`text-sm ${
+                      darkMode ? "text-gray-300" : "text-gray-700"
+                    }`}
+                  >
+                    {about?.split(" ").length > 15
+                      ? `${about.split(" ").slice(0, 15).join(" ")}... `
+                      : about}
+                    {about?.split(" ").length > 15 && (
                       <span
-                        key={index}
-                        className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
-                          darkMode
-                            ? "bg-blue-600 text-white"
-                            : "bg-white text-blue-600 border border-blue-300"
-                        }`}
+                        className="text-blue-500 cursor-pointer hover:underline ml-1"
+                        onClick={() => {
+                          navigate("/user/" + _id);
+                          window.scrollTo({ top: 0, behavior: "smooth" });
+                        }}
                       >
-                        {skill}
+                        know more
                       </span>
-                    ))}
-                  </div>
-                )}
+                    )}
+                  </p>
+
+                  {skills.length > 0 && (
+                    <div className="flex flex-wrap gap-2 mt-2">
+                      {skills.map((skill, index) => (
+                        <span
+                          key={index}
+                          className={`px-3 py-1 rounded-full text-xs font-medium ${
+                            darkMode
+                              ? "bg-blue-600 text-white"
+                              : "bg-white text-blue-600 border border-blue-300"
+                          }`}
+                        >
+                          {skill}
+                        </span>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              </div>
+
+              {/* Buttons */}
+              <div className="flex gap-3 w-full md:w-auto justify-center md:justify-end">
+                <button
+                  className={`px-4 py-2 btn w-24 ${
+                    darkMode ? "btn-success" : "btn-primary"
+                  }`}
+                  onClick={() => requestReceived("accepted", request._id)}
+                >
+                  Accept
+                </button>
+                <button
+                  className={`px-4 py-2 btn w-24 ${
+                    darkMode ? "btn-info" : "btn-secondary"
+                  }`}
+                  onClick={() => requestReceived("rejected", request._id)}
+                >
+                  Reject
+                </button>
               </div>
             </div>
-
-            <div className="flex gap-3">
-              <button
-                className={`px-4 py-2 btn transition ${
-                  darkMode ? "btn-success" : "btn-primary"
-                }`}
-                onClick={() => requestReceived("accepted", request._id)}
-              >
-                Accept
-              </button>
-              <button
-                className={`px-4 py-2 btn transition ${
-                  darkMode ? "btn-info" : "btn-secondary"
-                }`}
-                onClick={() => requestReceived("rejected", request._id)}
-              >
-                Reject
-              </button>
-            </div>
-          </div>
-        );
-      })}
+          );
+        })}
+      </div>
     </div>
   );
 };

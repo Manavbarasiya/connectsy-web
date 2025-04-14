@@ -25,11 +25,6 @@ const UserCard = ({ user }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const getShortAbout = (text, wordLimit = 15) => {
-    const words = text?.split(" ");
-    if (!words || words.length <= wordLimit) return text;
-    return words.slice(0, wordLimit).join(" ") + "...";
-  };
   const allPhotos =
     Array.isArray(photos) && photos.length > 0 ? photos : [photoURL];
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -53,14 +48,18 @@ const UserCard = ({ user }) => {
     trackMouse: true,
   });
 
+  const getShortAbout = (text, wordLimit = 20) => {
+    const words = text?.split(" ");
+    if (!words || words.length <= wordLimit) return text;
+    return words.slice(0, wordLimit).join(" ") + "...";
+  };
+
   const sendStatus = async (status, userId) => {
     try {
       await axios.post(
         `${BASE_URL}/request/send/interested/${userId}`,
         {},
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       );
       dispatch(removeUserFromFeed(userId));
     } catch (err) {
@@ -70,74 +69,59 @@ const UserCard = ({ user }) => {
 
   return (
     <div
-      className={`card w-96 border rounded-xl transition-all duration-500 transform hover:scale-[1.02] ${
+      className={`w-full max-w-[22rem] sm:w-96 border rounded-xl transition-all duration-500 transform hover:scale-[1.02] mx-auto ${
         darkMode
           ? "bg-slate-700 border-gray-600 text-white shadow-md"
           : "bg-pink-100 text-black"
       }`}
     >
-      {/* Conditional Image Rendering */}
-      {allPhotos.length === 1 ? (
-        <div className="relative">
-          <img
-            src={allPhotos[0]}
-            alt="Profile"
-            loading="lazy"
-            className="rounded-xl w-full h-[400px] object-cover object-center shadow-lg transition-all duration-500"
-            style={{ imageRendering: "auto" }}
-          />
-        </div>
-      ) : (
-        <div className="relative" {...swipeHandlers}>
-          <img
-            src={allPhotos[currentIndex]}
-            alt="Profile"
-            loading="lazy"
-            className="rounded-xl w-full h-96 object-cover object-center shadow-lg transition-all duration-500"
-            style={{ imageRendering: "auto" }}
-          />
-          {currentIndex > 0 && (
+      <div className="relative" {...swipeHandlers}>
+        <img
+          src={allPhotos[currentIndex]}
+          alt="Profile"
+          className="rounded-xl w-full h-[300px] sm:h-[400px] object-cover object-center"
+        />
+        {allPhotos.length > 1 && (
+          <>
             <button
-              className="absolute top-1/2 left-2 transform -translate-y-1/2 bg-white/70 dark:bg-gray-800 p-1 rounded-full"
+              className="absolute top-1/2 left-[-1rem] transform -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800 shadow-md p-2 rounded-full hover:scale-110 transition"
               onClick={handlePrev}
             >
-              <ChevronLeft className="w-5 h-5" />
+              <ChevronLeft className="w-5 h-5 text-black dark:text-white" />
             </button>
-          )}
-          {currentIndex < allPhotos.length - 1 && (
             <button
-              className="absolute top-1/2 right-2 transform -translate-y-1/2 bg-white/70 dark:bg-gray-800 p-1 rounded-full"
+              className="absolute top-1/2 right-[-1rem] transform -translate-y-1/2 z-10 bg-white/80 dark:bg-gray-800 shadow-md p-2 rounded-full hover:scale-110 transition"
               onClick={handleNext}
             >
-              <ChevronRight className="w-5 h-5" />
+              <ChevronRight className="w-5 h-5 text-black dark:text-white" />
             </button>
-          )}
-        </div>
-      )}
+          </>
+        )}
+      </div>
 
-      <div className="card-body items-center text-center">
-        <h2 className="card-title flex items-center gap-1">
+      <div className="p-4 text-center">
+        <h2 className="text-lg font-semibold flex items-center justify-center gap-1">
           {firstName + " " + lastName}
           {isVerified && (
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              className="w-5 h-5 text-blue-500"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-            >
-              <path d="M22 12l-2-2-8 8-4-4-2 2 6 6z" />
-            </svg>
+            <img
+              src="verify.png"
+              alt="Verified Badge"
+              className="w-5 h-5 object-contain -ml-0.5 -mb-0.5"
+            />
           )}
         </h2>
 
         {age && gender && <p className="text-sm">{age + ", " + gender}</p>}
-        <div className="text-sm mt-1">
+
+        <div className="text-sm mt-2">
           <p>
             {getShortAbout(about)}
             {about?.split(" ").length > 20 && (
               <button
-                className={`ml-2 text-blue-500 underline hover:text-blue-700 transition-colors ${
-                  darkMode ? "text-blue-300 hover:text-blue-100" : ""
+                className={`ml-2 underline hover:text-blue-700 ${
+                  darkMode
+                    ? "text-blue-300 hover:text-blue-100"
+                    : "text-blue-500"
                 }`}
                 onClick={() => navigate(`/user/${_id}`)}
               >
@@ -148,12 +132,12 @@ const UserCard = ({ user }) => {
         </div>
 
         {skills.length > 0 && (
-          <div className="mt-3 w-full">
+          <div className="mt-4">
             <div className="flex flex-wrap justify-center gap-2">
               {skills.map((skill, index) => (
                 <span
                   key={index}
-                  className={`px-3 py-1 rounded-full text-xs font-medium transition-colors ${
+                  className={`px-3 py-1 rounded-full text-xs font-medium ${
                     darkMode
                       ? "bg-blue-600 text-white"
                       : "bg-white text-blue-600 border border-blue-300"
@@ -166,7 +150,7 @@ const UserCard = ({ user }) => {
           </div>
         )}
 
-        <div className="card-actions mt-4 flex gap-3">
+        <div className="mt-6 flex flex-col sm:flex-row gap-3 justify-center">
           <button
             className={`btn ${darkMode ? "btn-info" : "btn-primary"}`}
             onClick={() => sendStatus("ignored", _id)}
