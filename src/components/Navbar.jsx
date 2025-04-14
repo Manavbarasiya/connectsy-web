@@ -37,9 +37,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
       }`}
     >
       {/* Left side: Logo and title */}
-      <Link
-        to="/"
-        className="flex items-center gap-3 text-2xl font-bold tracking-wide"
+      <div
+        onClick={() => navigate(user ? "/" : "/login")}
+        className="flex items-center gap-3 text-2xl font-bold tracking-wide cursor-pointer"
       >
         <img
           src={logo}
@@ -47,7 +47,7 @@ const Navbar = ({ darkMode, setDarkMode }) => {
           className="w-10 h-10 rounded-md object-cover shadow-sm"
         />
         <span className="hidden sm:inline">Connectsy</span>
-      </Link>
+      </div>
 
       {/* Right side: Theme toggle + User */}
       <div className="flex items-center gap-3">
@@ -64,7 +64,10 @@ const Navbar = ({ darkMode, setDarkMode }) => {
 
         {user && (
           <div className="dropdown dropdown-end relative">
-            <div className="flex items-center gap-2 cursor-pointer" tabIndex={0}>
+            <div
+              className="flex items-center gap-2 cursor-pointer"
+              tabIndex={0}
+            >
               <p className="mx-2 text-sm font-semibold hidden sm:block animate-pulse">
                 Welcome, {user.firstName}
               </p>
@@ -96,7 +99,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               <li>
                 <Link
                   to={"/connections"}
-                  className={darkMode ? "hover:text-pink-300" : "hover:text-purple-600"}
+                  className={
+                    darkMode ? "hover:text-pink-300" : "hover:text-purple-600"
+                  }
                 >
                   My Connections
                 </Link>
@@ -104,7 +109,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               <li>
                 <Link
                   to={"/requests"}
-                  className={darkMode ? "hover:text-pink-300" : "hover:text-purple-600"}
+                  className={
+                    darkMode ? "hover:text-pink-300" : "hover:text-purple-600"
+                  }
                 >
                   Connection Requests
                 </Link>
@@ -112,7 +119,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               <li>
                 <Link
                   to={"/requested"}
-                  className={darkMode ? "hover:text-pink-300" : "hover:text-purple-600"}
+                  className={
+                    darkMode ? "hover:text-pink-300" : "hover:text-purple-600"
+                  }
                 >
                   Requested
                 </Link>
@@ -120,7 +129,9 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               <li>
                 <Link
                   to={"/premium"}
-                  className={darkMode ? "hover:text-yellow-400" : "hover:text-yellow-600"}
+                  className={
+                    darkMode ? "hover:text-yellow-400" : "hover:text-yellow-600"
+                  }
                 >
                   Premium
                 </Link>

@@ -1,5 +1,5 @@
 import axios from "axios";
-import { X } from "lucide-react";
+import { X, Check } from "lucide-react";
 import React, { useRef, useState } from "react";
 import { useDispatch } from "react-redux";
 import { useNavigate, useOutletContext } from "react-router-dom";
@@ -52,6 +52,9 @@ const EditProfile = ({ user }) => {
         withCredentials: true,
       });
       setPhotos((prev) => prev.filter((url) => url !== urlToDelete));
+      if (photoURL === urlToDelete) {
+        setPhotoURL("");
+      }
     } catch (err) {
       console.error("Failed to delete photo:", err);
       setError("Could not delete photo. Please try again.");
@@ -125,17 +128,6 @@ const EditProfile = ({ user }) => {
 
   return (
     <div className="flex justify-center relative flex-col items-center">
-      {/* Preview button only on small screens */}
-      <div className="w-full flex justify-center mt-4 md:hidden">
-        <button
-          onClick={scrollToPreview}
-          className="btn btn-outline btn-accent text-sm"
-        >
-          Preview Profile
-        </button>
-      </div>
-
-      {/* Blur overlay on UserCard when uploading */}
       {uploading && (
         <div className="absolute inset-0 z-10 bg-black/40 flex items-center justify-center backdrop-blur-sm rounded-lg">
           <div className="text-white text-lg flex items-center gap-2">
@@ -145,7 +137,17 @@ const EditProfile = ({ user }) => {
         </div>
       )}
 
+      <div className="w-full flex justify-center mt-4 md:hidden">
+        <button
+          onClick={scrollToPreview}
+          className="btn btn-outline btn-accent text-sm"
+        >
+          Preview Profile
+        </button>
+      </div>
+
       <div className="flex flex-col md:flex-row justify-center md:space-x-10 my-10 mx-4 md:mx-10 gap-10 md:gap-0">
+        {/* Form Card */}
         <div
           className={`w-full md:w-[450px] card shadow-lg border transition-colors duration-500 ${
             darkMode
@@ -156,18 +158,9 @@ const EditProfile = ({ user }) => {
           <div className="card-body">
             <h2 className="card-title flex justify-center">Edit Profile</h2>
             <div>
-              {[
-                {
-                  label: "First Name",
-                  value: firstName,
-                  onChange: setFirstName,
-                },
+              {[ 
+                { label: "First Name", value: firstName, onChange: setFirstName },
                 { label: "Last Name", value: lastName, onChange: setLastName },
-                {
-                  label: "Profile URL",
-                  value: photoURL,
-                  onChange: setPhotoURL,
-                },
                 { label: "Age", value: age, onChange: setAge, type: "number" },
               ].map(({ label, value, onChange, type = "text" }) => (
                 <fieldset className="mb-3" key={label}>
@@ -183,6 +176,56 @@ const EditProfile = ({ user }) => {
                 </fieldset>
               ))}
 
+              {/* Profile Photo URL Input */}
+              <fieldset className="mb-3">
+                <legend className="text-sm font-medium mb-1">
+                  Profile Picture URL (optional)
+                </legend>
+                <input
+                  type="text"
+                  className={`input input-bordered w-full ${
+                    darkMode ? "bg-gray-800 text-white border-gray-600" : ""
+                  }`}
+                  value={photoURL}
+                  onChange={(e) => setPhotoURL(e.target.value)}
+                  placeholder="Paste an image URL or select below"
+                />
+              </fieldset>
+
+              {/* Select from uploaded photos */}
+              {photos.length > 0 && (
+                <div className="mb-4">
+                  <p className="text-xs mb-1 text-gray-500">
+                    Or select one of your uploaded photos:
+                  </p>
+                  <div className="flex flex-wrap gap-3">
+                    {photos.map((url, idx) => (
+                      <div
+                        key={idx}
+                        onClick={() => setPhotoURL(url)}
+                        className={`w-14 h-14 rounded-md border-2 cursor-pointer relative ${
+                          photoURL === url
+                            ? "border-green-500 ring ring-green-400"
+                            : "border-gray-300"
+                        }`}
+                      >
+                        <img
+                          src={url}
+                          alt="Profile option"
+                          className="w-full h-full object-cover rounded-md"
+                        />
+                        {photoURL === url && (
+                          <div className="absolute top-0 right-0 bg-green-500 rounded-bl-sm text-white p-[2px]">
+                            <Check size={12} />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              {/* Gender */}
               <fieldset className="mb-3">
                 <legend className="text-sm font-medium mb-1">Gender</legend>
                 <select
@@ -204,7 +247,6 @@ const EditProfile = ({ user }) => {
                 <div className="flex items-center gap-2 mb-2">
                   <input
                     type="text"
-                    placeholder=""
                     className={`input input-bordered flex-1 ${
                       darkMode ? "bg-gray-800 text-white border-gray-600" : ""
                     }`}
@@ -256,19 +298,18 @@ const EditProfile = ({ user }) => {
                 />
               </fieldset>
 
-              {/* Photos */}
+              {/* Photos Upload Section */}
               <fieldset className="mb-3">
                 <legend className="text-sm font-medium mb-1">
                   Profile Photos
                 </legend>
                 <p className="text-xs text-gray-500 mb-2">
-                  You can upload up to 5 photos. Click <strong>+</strong> to add
-                  more.
+                  You can upload up to 6 photos. Click <strong>+</strong> to
+                  add more.
                 </p>
                 <div className="grid grid-cols-3 gap-3">
                   {[...Array(6)].map((_, index) => {
                     const imageURL = photos[index];
-
                     return (
                       <div
                         key={index}
@@ -326,19 +367,19 @@ const EditProfile = ({ user }) => {
                   })}
                 </div>
               </fieldset>
-            </div>
 
-            {error && <p className="text-red-500">{error}</p>}
+              {error && <p className="text-red-500">{error}</p>}
 
-            <div className="card-actions justify-center m-2">
-              <button className="btn btn-secondary" onClick={saveProfile}>
-                Save
-              </button>
+              <div className="card-actions justify-center m-2">
+                <button className="btn btn-secondary" onClick={saveProfile}>
+                  Save
+                </button>
+              </div>
             </div>
           </div>
         </div>
 
-        {/* UserCard Preview */}
+        {/* Preview */}
         <div className="flex-1 relative mt-6 md:mt-0" ref={cardRef}>
           <div className={`${uploading ? "blur-sm pointer-events-none" : ""}`}>
             <UserCard
