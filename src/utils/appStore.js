@@ -5,13 +5,15 @@ import feedReducer from "./feedSlice";
 import connectionReducers from "./connectionSlice";
 import requestReducers from "./requestSlice";
 import requestedReducers from "./requestedSlice";
+import ignoredReducers from "./ignoredSlice";
 const appStore=configureStore({
     reducer:{
         user:userReducer,
         feed:feedReducer,
         connections:connectionReducers,
         requests:requestReducers,
-        requested:requestedReducers
+        requested:requestedReducers,
+        ignored:ignoredReducers,
     },
 })
 

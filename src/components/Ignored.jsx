@@ -1,50 +1,51 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { useDispatch, useSelector } from "react-redux";
-import { useNavigate, useOutletContext } from "react-router-dom";
 import { BASE_URL } from "../utils/constants";
-import { addRequests, removeRequest } from "../utils/requestSlice";
+import { useDispatch, useSelector } from "react-redux";
+import { addIgnored, removeUser } from "../utils/ignoredSlice";
+import { useNavigate, useOutletContext } from "react-router-dom";
 
-const Requests = () => {
+const Ignored = () => {
   const dispatch = useDispatch();
-  const requests = useSelector((store) => store.requests);
   const { darkMode } = useOutletContext();
   const [isLoading, setIsLoading] = useState(true);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 New
   const navigate = useNavigate();
+  const ignored = useSelector((store) => store.ignored);
 
-  const fetchRequests = async () => {
+  const fetchIgnoredConnections = async () => {
     try {
-      const res = await axios.get(BASE_URL + "/user/requests/received", {
+      const res = await axios.get(BASE_URL + "/user/ignored", {
         withCredentials: true,
       });
-      dispatch(addRequests(res.data.pendingRequests));
+      dispatch(addIgnored(res.data.ignored));
     } catch (err) {
-      console.error("Error in requests " + err.message);
+      console.log("Error in fetchIgnoredConnections " + err.message);
     } finally {
       setIsLoading(false);
     }
   };
 
   useEffect(() => {
-    fetchRequests();
+    fetchIgnoredConnections();
   }, []);
 
-  const requestReceived = async (status, _id) => {
+  const handleInterest = async (toUserId) => {
     try {
       await axios.post(
-        BASE_URL + "/request/review/" + status + "/" + _id,
+        `${BASE_URL}/request/ignored/interested/${toUserId}`,
         {},
         { withCredentials: true }
       );
-      dispatch(removeRequest(_id));
+      dispatch(removeUser(toUserId));
+      fetchIgnoredConnections();
     } catch (err) {
-      console.log("Error in requestReceived part: " + err.message);
+      console.error("Error in handleInterest request: " + err.message);
     }
   };
 
-  const filteredRequests = requests.filter((request) => {
-    const fullName = `${request.fromUserId.firstName} ${request.fromUserId.lastName}`.toLowerCase();
+  const filteredIgnored = ignored.filter(({ toUserId }) => {
+    const fullName = `${toUserId.firstName} ${toUserId.lastName}`.toLowerCase();
     return fullName.includes(searchTerm.toLowerCase());
   });
 
@@ -57,36 +58,37 @@ const Requests = () => {
       >
         <img
           src="https://cdn.pixabay.com/animation/2022/10/11/03/16/03-16-39-160_512.gif"
-          alt="Loading requests..."
+          alt="Loading ignored users..."
           className="w-24 h-24 mb-6"
         />
         <h2 className="text-2xl font-semibold animate-pulse">
-          Checking for requests...
+          Loading ignored users...
         </h2>
       </div>
     );
   }
 
-  if (!requests || requests.length === 0) {
+  if (!ignored || ignored.length === 0) {
     return (
       <div
         className={`flex flex-col items-center justify-center h-[75vh] text-center px-4 transition-colors duration-300 ${
-          darkMode ? "bg-gray-800 text-white" : ""
+          darkMode ? "bg-slate-800 text-white" : ""
         }`}
       >
         <img
-          src="https://cdn.pixabay.com/animation/2024/03/05/02/16/02-16-28-55_512.gif"
-          alt="No requests"
+          src="https://cdn.pixabay.com/photo/2023/01/05/22/17/ai-generated-7699943_1280.png"
+          alt="Not ignored"
           className="w-64 h-64 mb-6"
         />
-        <h1 className="text-3xl font-bold mb-2">You're All Caught Up!</h1>
+        <h1 className="text-3xl font-bold mb-2">No users here..</h1>
         <p
           className={`max-w-md mb-6 ${
             darkMode ? "text-gray-300" : "text-gray-500"
           }`}
         >
-          No connection requests at the moment. Come back later or explore new
-          users to connect with.
+          Looks like you haven't ignored anyone. Well, that's a good thing.
+          <br />
+          You can start exploring users and connect with them.
         </p>
         <a
           href="/"
@@ -104,10 +106,10 @@ const Requests = () => {
         darkMode ? "bg-gray-800 text-white" : "text-black"
       }`}
     >
-      <h1 className="font-bold text-2xl mb-8">Connection Requests</h1>
+      <h1 className="font-bold text-2xl mb-8">Ignored Users</h1>
 
-      {/* Search Bar */}
-      <div className="mb-10 flex justify-center">
+      {/* 🔍 Search input */}
+      <div className="mb-8 flex justify-center">
         <div
           className={`relative w-full max-w-md rounded-full shadow-lg transition duration-300 ${
             darkMode ? "bg-slate-700" : "bg-base-300"
@@ -118,7 +120,7 @@ const Requests = () => {
           </span>
           <input
             type="text"
-            placeholder="Search requests by name..."
+            placeholder="Search by name..."
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
             className={`w-full py-2.5 pl-10 pr-4 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${
@@ -131,7 +133,7 @@ const Requests = () => {
       </div>
 
       <div className="flex flex-col gap-8 items-center">
-        {filteredRequests.map((request) => {
+        {filteredIgnored.map(({ toUserId: user }) => {
           const {
             firstName,
             lastName,
@@ -139,10 +141,10 @@ const Requests = () => {
             gender,
             about,
             photoURL,
+            isVerified,
             skills = [],
             _id,
-            isVerified,
-          } = request.fromUserId;
+          } = user;
 
           return (
             <div
@@ -220,23 +222,15 @@ const Requests = () => {
                 </div>
               </div>
 
-              {/* Buttons */}
+              {/* Button */}
               <div className="flex gap-3 mt-4 sm:mt-0 w-full sm:w-auto justify-center sm:justify-end">
                 <button
-                  className={`px-4 mt-7 py-2 btn w-24 ${
-                    darkMode ? "btn-success" : "btn-primary"
+                  className={`px-4 mt-7 py-2 btn w-32 ${
+                    darkMode ? "btn-primary" : "btn-secondary"
                   }`}
-                  onClick={() => requestReceived("accepted", request._id)}
+                  onClick={() => handleInterest(_id)}
                 >
-                  Accept
-                </button>
-                <button
-                  className={`px-4 mt-7 py-2 btn w-24 ${
-                    darkMode ? "btn-info" : "btn-secondary"
-                  }`}
-                  onClick={() => requestReceived("rejected", request._id)}
-                >
-                  Reject
+                  Interested
                 </button>
               </div>
             </div>
@@ -247,4 +241,4 @@ const Requests = () => {
   );
 };
 
-export default Requests;
+export default Ignored;

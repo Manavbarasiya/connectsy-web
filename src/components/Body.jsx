@@ -50,9 +50,11 @@ const Body = () => {
   return (
     <div className={`min-h-screen flex flex-col transition-colors duration-300 ${darkMode ? 'dark bg-gray-900' : ''}`}>
       <Navbar darkMode={darkMode} setDarkMode={setDarkMode} />
-      <div className={`flex-grow transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-100'}`}>
-        <Outlet context={{darkMode}}/>
-      </div>
+      
+      <main className={`flex-grow transition-colors duration-300 ${darkMode ? 'bg-gray-800' : 'bg-gradient-to-br from-indigo-200 via-purple-200 to-pink-100'}`}>
+        <Outlet context={{ darkMode }} />
+      </main>
+      
       <Footer darkMode={darkMode} />
     </div>
   );

@@ -118,7 +118,7 @@ const UserProfile = () => {
       {/* Profile Details */}
       <div className="py-3 px-6 space-y-4 text-center">
         <h2 className="text-2xl flex -my-0.5  mx-4 font-semibold justify-center items-center gap-1">
-          <h2 className="">{user.firstName} {user.lastName}</h2>
+          <span className="">{user.firstName} {user.lastName}</span>
           {user.isVerified && (
             <img
             src="/verify.png"

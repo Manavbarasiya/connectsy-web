@@ -128,6 +128,16 @@ const Navbar = ({ darkMode, setDarkMode }) => {
               </li>
               <li>
                 <Link
+                  to={"/ignored"}
+                  className={
+                    darkMode ? "hover:text-pink-300" : "hover:text-purple-600"
+                  }
+                >
+                  Ignored
+                </Link>
+              </li>
+              <li>
+                <Link
                   to={"/premium"}
                   className={
                     darkMode ? "hover:text-yellow-400" : "hover:text-yellow-600"

@@ -9,6 +9,7 @@ const Connections = () => {
   const dispatch = useDispatch();
   const connections = useSelector((store) => store.connections);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState("");
   const navigate = useNavigate();
   const { darkMode } = useOutletContext();
 
@@ -28,6 +29,11 @@ const Connections = () => {
   useEffect(() => {
     fetchConnections();
   }, []);
+
+  const filteredConnections = connections.filter((conn) => {
+    const fullName = `${conn.firstName} ${conn.lastName}`.toLowerCase();
+    return fullName.includes(searchTerm.toLowerCase());
+  });
 
   if (isLoading) {
     return (
@@ -84,8 +90,33 @@ const Connections = () => {
       <h1 className={`font-bold text-2xl mb-6 ${darkMode ? "text-white" : ""}`}>
         Connections
       </h1>
+
+      {/* Search input */}
+      <div className="mb-10 flex justify-center">
+        <div
+          className={`relative w-full max-w-md rounded-full shadow-lg transition duration-300 ${
+            darkMode ? "bg-slate-700" : "bg-base-300"
+          }`}
+        >
+          <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+            🔍
+          </span>
+          <input
+            type="text"
+            placeholder="Search connections by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`w-full py-2.5 pl-10 pr-4 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${
+              darkMode
+                ? "bg-slate-700 text-white placeholder-gray-400"
+                : "bg-base-300 text-black placeholder-gray-500 border border-gray-300"
+            }`}
+          />
+        </div>
+      </div>
+
       <div className="flex flex-col gap-6 items-center">
-        {connections.map((connection) => {
+        {filteredConnections.map((connection) => {
           const {
             _id,
             firstName,
@@ -110,7 +141,7 @@ const Connections = () => {
                   navigate("/user/" + _id);
                   window.scrollTo(0, 0);
                 }}
-                alt="photo"
+                alt="profile"
                 className="w-24 h-24 rounded-full object-cover shadow-md cursor-pointer"
               />
               <div className="relative sm:ml-4 mt-4 sm:mt-0 text-center sm:text-left w-full">
@@ -118,18 +149,18 @@ const Connections = () => {
                   {firstName + " " + lastName}
                   {isVerified && (
                     <img
-                    src="verify.png"
-                    alt="Verified Badge"
-                    className="w-5 h-5 object-contain -ml-0.5 -mb-1"
-                  />
+                      src="verify.png"
+                      alt="Verified Badge"
+                      className="w-5 h-5 object-contain -ml-0.5 -mb-1"
+                    />
                   )}
                 </h2>
-
                 {age && gender && (
                   <p className="text-gray-500">{age + ", " + gender}</p>
                 )}
-
-                <p className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}>
+                <p
+                  className={`${darkMode ? "text-gray-300" : "text-gray-700"}`}
+                >
                   {about?.split(" ").length > 15
                     ? `${about.split(" ").slice(0, 15).join(" ")}... `
                     : about}
@@ -145,7 +176,6 @@ const Connections = () => {
                     </span>
                   )}
                 </p>
-
                 {skills.length > 0 && (
                   <div className="flex flex-wrap gap-2 mt-3 justify-center sm:justify-start">
                     {skills.map((skill, index) => (
@@ -162,8 +192,6 @@ const Connections = () => {
                     ))}
                   </div>
                 )}
-
-                {/* Chat Button */}
                 <button
                   onClick={() => navigate(`/chat/${_id}`)}
                   className={`sm:absolute sm:right-4 btn sm:top-4 mt-3 sm:mt-0 ${

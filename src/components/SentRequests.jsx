@@ -1,16 +1,18 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import { BASE_URL } from "../utils/constants";
 import { useDispatch, useSelector } from "react-redux";
-import { addRequested, removeRequested } from "../utils/requestedSlice";
 import { useNavigate, useOutletContext } from "react-router-dom";
+import { BASE_URL } from "../utils/constants";
+import { addRequested, removeRequested } from "../utils/requestedSlice";
 
 const SentRequests = () => {
   const dispatch = useDispatch();
   const { darkMode } = useOutletContext();
   const requested = useSelector((store) => store.requested);
   const [isLoading, setIsLoading] = useState(true);
+  const [searchTerm, setSearchTerm] = useState(""); // 🔍 New: Search term state
   const navigate = useNavigate();
+
   const fetchRequestedConnections = async () => {
     try {
       const res = await axios.get(BASE_URL + "/user/requests/requested", {
@@ -38,6 +40,12 @@ const SentRequests = () => {
   useEffect(() => {
     fetchRequestedConnections();
   }, []);
+
+  const filteredRequests = requested.filter((request) => {
+    const fullName =
+      `${request.toUserId.firstName} ${request.toUserId.lastName}`.toLowerCase();
+    return fullName.includes(searchTerm.toLowerCase());
+  });
 
   if (isLoading) {
     return (
@@ -88,16 +96,42 @@ const SentRequests = () => {
       </div>
     );
   }
+
   return (
     <div
       className={`text-center my-10 transition-colors duration-300 ${
         darkMode ? "bg-gray-800 text-white" : "text-black"
       }`}
     >
-      <h1 className={`font-bold text-2xl mb-6 ${darkMode ? "text-white" : ""}`}>
+      <h1 className={`font-bold text-2xl mb-4 ${darkMode ? "text-white" : ""}`}>
         Sent Connection Requests
       </h1>
-      {requested.map((request) => {
+
+      {/* 🔍 Search input */}
+      <div className="mb-8 flex justify-center ">
+        <div
+          className={`relative w-full max-w-md rounded-full shadow-lg transition duration-300 ${
+            darkMode ? "bg-slate-700" : "bg-base-300"
+          }`}
+        >
+          <span className="absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400">
+            🔍
+          </span>
+          <input
+            type="text"
+            placeholder="Search by name..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className={`w-full py-2.5 pl-10 pr-4 rounded-full text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-200 ${
+              darkMode
+                ? "bg-slate-700 text-white placeholder-gray-400"
+                : "bg-base-300 text-black placeholder-gray-500 border border-gray-300"
+            }`}
+          />
+        </div>
+      </div>
+
+      {filteredRequests.map((request) => {
         const {
           firstName,
           lastName,
@@ -133,10 +167,10 @@ const SentRequests = () => {
                   {firstName + " " + lastName}
                   {isVerified && (
                     <img
-                    src="verify.png"
-                    alt="Verified Badge"
-                    className="w-5 h-5 object-contain -ml-0.5 -mb-1"
-                  />
+                      src="verify.png"
+                      alt="Verified Badge"
+                      className="w-5 h-5 object-contain -ml-0.5 -mb-1"
+                    />
                   )}
                 </h2>
                 {age && gender && (
